@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="ai/provider/wunderbyte/db" VERSION="2026051600" COMMENT="XMLDB file for aiprovider_wunderbyte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
+  <TABLES>
+    <TABLE NAME="ai_action_generate_embeddings" COMMENT="Stores embedding generation requests.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="inputtext" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The input text used to generate the embedding."/>
+        <FIELD NAME="responseid" TYPE="char" LENGTH="128" NOTNULL="false" SEQUENCE="false" COMMENT="The AI response identifier."/>
+        <FIELD NAME="model" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false" COMMENT="The model used to generate the embedding."/>
+        <FIELD NAME="embedding" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The embedding vector in JSON format."/>
+        <FIELD NAME="dimensions" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Embedding vector dimensions."/>
+        <FIELD NAME="prompttokens" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Prompt tokens used for the request."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="ai_action_planner_decide" COMMENT="Stores planner routing decisions.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="prompt" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The planner prompt."/>
+        <FIELD NAME="responseid" TYPE="char" LENGTH="128" NOTNULL="false" SEQUENCE="false" COMMENT="A unique identifier for the chat completion."/>
+        <FIELD NAME="fingerprint" TYPE="char" LENGTH="128" NOTNULL="false" SEQUENCE="false" COMMENT="Model fingerprint."/>
+        <FIELD NAME="generatedcontent" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The planner output."/>
+        <FIELD NAME="finishreason" TYPE="char" LENGTH="128" NOTNULL="false" SEQUENCE="false" COMMENT="Why generation stopped."/>
+        <FIELD NAME="prompttokens" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Prompt token count."/>
+        <FIELD NAME="completiontoken" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Completion token count."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="ai_action_generate_agent_reply" COMMENT="Stores final agent replies.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="prompt" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The reply prompt."/>
+        <FIELD NAME="responseid" TYPE="char" LENGTH="128" NOTNULL="false" SEQUENCE="false" COMMENT="A unique identifier for the chat completion."/>
+        <FIELD NAME="fingerprint" TYPE="char" LENGTH="128" NOTNULL="false" SEQUENCE="false" COMMENT="Model fingerprint."/>
+        <FIELD NAME="generatedcontent" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The final reply."/>
+        <FIELD NAME="finishreason" TYPE="char" LENGTH="128" NOTNULL="false" SEQUENCE="false" COMMENT="Why generation stopped."/>
+        <FIELD NAME="prompttokens" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Prompt token count."/>
+        <FIELD NAME="completiontoken" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Completion token count."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>
