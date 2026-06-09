@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace aiprovider_openai\aimodel;
+namespace aiprovider_wunderbyte\aimodel;
 
 /**
  * O1 AI model.
  *
- * @package    aiprovider_openai
+ * @package    aiprovider_wunderbyte
  * @copyright  2025 Huong Nguyen <huongnv13@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -41,24 +41,24 @@ class o1 extends gpt4o {
                 'elementtype' => 'text',
                 'label' => [
                     'identifier' => 'settings_top_p',
-                    'component' => 'aiprovider_openai',
+                    'component' => 'aiprovider_wunderbyte',
                 ],
                 'type' => PARAM_FLOAT,
                 'help' => [
                     'identifier' => 'settings_top_p',
-                    'component' => 'aiprovider_openai',
+                    'component' => 'aiprovider_wunderbyte',
                 ],
             ],
             'max_completion_tokens' => [
                 'elementtype' => 'text',
                 'label' => [
                     'identifier' => 'settings_max_completion_tokens',
-                    'component' => 'aiprovider_openai',
+                    'component' => 'aiprovider_wunderbyte',
                 ],
                 'type' => PARAM_INT,
                 'help' => [
                     'identifier' => 'settings_max_completion_tokens',
-                    'component' => 'aiprovider_openai',
+                    'component' => 'aiprovider_wunderbyte',
                 ],
             ],
         ];

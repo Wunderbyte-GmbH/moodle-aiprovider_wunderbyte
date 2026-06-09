@@ -14,15 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace aiprovider_openai\form;
+namespace aiprovider_wunderbyte\form;
 
-use aiprovider_openai\helper;
+use aiprovider_wunderbyte\helper;
 use core_ai\form\action_settings_form;
 
 /**
  * Base action settings form for OpenAI provider.
  *
- * @package    aiprovider_openai
+ * @package    aiprovider_wunderbyte
  * @copyright  2025 Huong Nguyen <huongnv13@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -64,7 +64,7 @@ class action_form extends action_settings_form {
         $this->actionname = $this->_customdata['actionname'];
         $this->action = $this->_customdata['action'];
         $this->providerid = $this->_customdata['providerid'] ?? 0;
-        $this->providername = $this->_customdata['providername'] ?? 'aiprovider_openai';
+        $this->providername = $this->_customdata['providername'] ?? 'aiprovider_wunderbyte';
         $this->storedmodelsettings = $this->_customdata['actionconfig']['modelsettings'] ?? [];
 
         $mform->addElement('header', 'generalsettingsheader', get_string('general', 'core'));
@@ -127,7 +127,7 @@ class action_form extends action_settings_form {
         if (!empty($data['modelextraparams'])) {
             json_decode($data['modelextraparams']);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                $errors['modelextraparams'] = get_string('invalidjson', 'aiprovider_openai');
+                $errors['modelextraparams'] = get_string('invalidjson', 'aiprovider_wunderbyte');
             }
         }
 
@@ -159,7 +159,7 @@ class action_form extends action_settings_form {
      */
     protected function add_model_fields(int $modeltype): void {
         global $PAGE;
-        $PAGE->requires->js_call_amd('aiprovider_openai/modelchooser', 'init');
+        $PAGE->requires->js_call_amd('aiprovider_wunderbyte/modelchooser', 'init');
         $mform = $this->_form;
         $actionname = $this->actionname;
 
@@ -186,19 +186,19 @@ class action_form extends action_settings_form {
         $mform->addElement(
             'select',
             'modeltemplate',
-            get_string("action:{$this->actionname}:model", 'aiprovider_openai'),
+            get_string("action:{$this->actionname}:model", 'aiprovider_wunderbyte'),
             $this->get_model_list($modeltype),
             ['data-modelchooser-field' => 'selector', 'data-storedmodelsettings' => json_encode($this->storedmodelsettings)],
         );
         $mform->setType('modeltemplate', PARAM_TEXT);
         $mform->addRule('modeltemplate', null, 'required', null, 'client');
         $mform->setDefault('modeltemplate', $defaultmodel);
-        $mform->addHelpButton('modeltemplate', "action:{$this->actionname}:model", 'aiprovider_openai');
+        $mform->addHelpButton('modeltemplate', "action:{$this->actionname}:model", 'aiprovider_wunderbyte');
 
         $mform->addElement('hidden', 'model', $defaultmodel);
         $mform->setType('model', PARAM_TEXT);
 
-        $mform->addElement('text', 'custommodel', get_string('custom_model_name', 'aiprovider_openai'));
+        $mform->addElement('text', 'custommodel', get_string('custom_model_name', 'aiprovider_wunderbyte'));
         $mform->setType('custommodel', PARAM_TEXT);
         $mform->setDefault('custommodel', $this->actionconfig['model'] ?? '');
         $mform->hideIf('custommodel', 'modeltemplate', 'neq', 'custom');

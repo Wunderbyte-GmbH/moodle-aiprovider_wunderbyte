@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace aiprovider_openai;
+namespace aiprovider_wunderbyte;
 
-use aiprovider_openai\test\testcase_helper_trait;
+use aiprovider_wunderbyte\test\testcase_helper_trait;
 use core_ai\aiactions\base;
 use core_ai\provider;
 use GuzzleHttp\Psr7\Response;
@@ -24,12 +24,12 @@ use GuzzleHttp\Psr7\Response;
 /**
  * Test Generate text provider class for OpenAI provider methods.
  *
- * @package    aiprovider_openai
+ * @package    aiprovider_wunderbyte
  * @copyright  2024 Matt Porritt <matt.porritt@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     \aiprovider_openai\provider
- * @covers     \aiprovider_openai\process_summarise_text
- * @covers     \aiprovider_openai\abstract_processor
+ * @covers     \aiprovider_wunderbyte\provider
+ * @covers     \aiprovider_wunderbyte\process_summarise_text
+ * @covers     \aiprovider_wunderbyte\abstract_processor
  */
 final class process_summarise_text_test extends \advanced_testcase {
     use testcase_helper_trait;
@@ -53,7 +53,7 @@ final class process_summarise_text_test extends \advanced_testcase {
         parent::setUp();
         $this->resetAfterTest();
         // Load a response body from a file.
-        $this->responsebodyjson = file_get_contents(self::get_fixture_path('aiprovider_openai', 'text_request_success.json'));
+        $this->responsebodyjson = file_get_contents(self::get_fixture_path('aiprovider_wunderbyte', 'text_request_success.json'));
         $this->manager = \core\di::get(\core_ai\manager::class);
         $this->provider = $this->create_provider(
             actionclass: \core_ai\aiactions\summarise_text::class,
@@ -360,7 +360,7 @@ final class process_summarise_text_test extends \advanced_testcase {
             'userratelimit' => 1,
         ];
         $provider = $this->manager->create_provider_instance(
-            classname: '\aiprovider_openai\provider',
+            classname: '\aiprovider_wunderbyte\provider',
             name: 'dummy',
             config: $config,
             actionconfig: [
@@ -456,7 +456,7 @@ final class process_summarise_text_test extends \advanced_testcase {
             'globalratelimit' => 1,
         ];
         $provider = $this->manager->create_provider_instance(
-            classname: '\aiprovider_openai\provider',
+            classname: '\aiprovider_wunderbyte\provider',
             name: 'dummy',
             config: $config,
             actionconfig: [

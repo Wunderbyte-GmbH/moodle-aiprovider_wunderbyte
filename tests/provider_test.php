@@ -14,15 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace aiprovider_openai;
+namespace aiprovider_wunderbyte;
 
 /**
  * Test OpenAI provider methods.
  *
- * @package    aiprovider_openai
+ * @package    aiprovider_wunderbyte
  * @copyright  2024 Matt Porritt <matt.porritt@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     \aiprovider_openai\provider
+ * @covers     \aiprovider_wunderbyte\provider
  */
 final class provider_test extends \advanced_testcase {
     /** @var \core_ai\manager */
@@ -41,7 +41,7 @@ final class provider_test extends \advanced_testcase {
         // Create the provider instance.
         $this->manager = \core\di::get(\core_ai\manager::class);
         $this->provider = $this->manager->create_provider_instance(
-            classname: '\aiprovider_openai\provider',
+            classname: '\aiprovider_wunderbyte\provider',
             name: 'dummy',
         );
     }
@@ -82,7 +82,7 @@ final class provider_test extends \advanced_testcase {
             'globalratelimit' => 5,
         ];
         $provider = $this->manager->create_provider_instance(
-            classname: '\aiprovider_openai\provider',
+            classname: '\aiprovider_wunderbyte\provider',
             name: 'dummy',
             config: $config,
         );

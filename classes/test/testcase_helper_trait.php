@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace aiprovider_openai\test;
+namespace aiprovider_wunderbyte\test;
 
 /**
  * Trait for test cases.
  *
- * @package    aiprovider_openai
+ * @package    aiprovider_wunderbyte
  * @copyright  2025 Huong Nguyen <huongnv13@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -54,7 +54,7 @@ trait testcase_helper_trait {
             $defaultactionconfig[$actionclass]['settings'][$key] = $value;
         }
         $provider = $manager->create_provider_instance(
-            classname: '\aiprovider_openai\provider',
+            classname: '\aiprovider_wunderbyte\provider',
             name: 'dummy',
             config: $config,
             actionconfig: $defaultactionconfig,

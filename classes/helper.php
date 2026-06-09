@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace aiprovider_openai;
+namespace aiprovider_wunderbyte;
 
 use core_ai\aimodel\base;
 
 /**
  * Helper class for the OpenAI provider.
  *
- * @package    aiprovider_openai
+ * @package    aiprovider_wunderbyte
  * @copyright  2025 Huong Nguyen <huongnv13@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -33,7 +33,7 @@ class helper {
      */
     public static function get_model_classes(): array {
         $models = [];
-        $modelclasses = \core_component::get_component_classes_in_namespace('aiprovider_openai', 'aimodel');
+        $modelclasses = \core_component::get_component_classes_in_namespace('aiprovider_wunderbyte', 'aimodel');
         foreach ($modelclasses as $class => $path) {
             if (!class_exists($class) || !is_a($class, base::class, true)) {
                 throw new \coding_exception("Model class not valid: {$class}");

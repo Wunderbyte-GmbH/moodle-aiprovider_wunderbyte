@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace aiprovider_openai\form;
+namespace aiprovider_wunderbyte\form;
 
-use aiprovider_openai\aimodel\openai_base;
+use aiprovider_wunderbyte\aimodel\openai_base;
 
 /**
  * Generate text action provider settings form.
  *
- * @package    aiprovider_openai
+ * @package    aiprovider_wunderbyte
  * @copyright  2024 Matt Porritt <matt.porritt@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -37,7 +37,7 @@ class action_generate_text_form extends action_form {
         $mform->addElement(
             'text',
             'endpoint',
-            get_string("action:{$this->actionname}:endpoint", 'aiprovider_openai'),
+            get_string("action:{$this->actionname}:endpoint", 'aiprovider_wunderbyte'),
             'maxlength="255" size="30"',
         );
         $mform->setType('endpoint', PARAM_URL);
@@ -48,12 +48,12 @@ class action_generate_text_form extends action_form {
         $mform->addElement(
             'textarea',
             'systeminstruction',
-            get_string("action:{$this->actionname}:systeminstruction", 'aiprovider_openai'),
+            get_string("action:{$this->actionname}:systeminstruction", 'aiprovider_wunderbyte'),
             'wrap="virtual" rows="5" cols="20"',
         );
         $mform->setType('systeminstruction', PARAM_TEXT);
         $mform->setDefault('systeminstruction', $actionconfig['systeminstruction'] ?? $this->action::get_system_instruction());
-        $mform->addHelpButton('systeminstruction', "action:{$this->actionname}:systeminstruction", 'aiprovider_openai');
+        $mform->addHelpButton('systeminstruction', "action:{$this->actionname}:systeminstruction", 'aiprovider_wunderbyte');
 
         if ($this->returnurl) {
             $mform->addElement('hidden', 'returnurl', $this->returnurl);

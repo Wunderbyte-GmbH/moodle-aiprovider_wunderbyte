@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace aiprovider_openai\form;
+namespace aiprovider_wunderbyte\form;
 
-use aiprovider_openai\aimodel\openai_base;
+use aiprovider_wunderbyte\aimodel\openai_base;
 
 /**
  * Generate image action provider settings form.
  *
- * @package    aiprovider_openai
+ * @package    aiprovider_wunderbyte
  * @copyright  2024 Matt Porritt <matt.porritt@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -37,7 +37,7 @@ class action_generate_image_form extends action_form {
         $mform->addElement(
             'text',
             'endpoint',
-            get_string("action:{$this->actionname}:endpoint", 'aiprovider_openai'),
+            get_string("action:{$this->actionname}:endpoint", 'aiprovider_wunderbyte'),
             'maxlength="255" size="30"',
         );
         $mform->setType('endpoint', PARAM_URL);
