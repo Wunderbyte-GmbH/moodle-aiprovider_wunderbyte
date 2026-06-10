@@ -54,9 +54,9 @@ final class provider_test extends \advanced_testcase {
         $this->assertIsArray($actionlist);
         $this->assertCount(4, $actionlist);
         $this->assertContains(\core_ai\aiactions\generate_text::class, $actionlist);
-        $this->assertContains(\core_ai\aiactions\generate_image::class, $actionlist);
-        $this->assertContains(\core_ai\aiactions\summarise_text::class, $actionlist);
-        $this->assertContains(\core_ai\aiactions\explain_text::class, $actionlist);
+        $this->assertContains(\aiprovider_wunderbyte\aiactions\generate_embeddings::class, $actionlist);
+        $this->assertContains(\aiprovider_wunderbyte\aiactions\planner_decide::class, $actionlist);
+        $this->assertContains(\aiprovider_wunderbyte\aiactions\generate_agent_reply::class, $actionlist);
     }
 
     /**
