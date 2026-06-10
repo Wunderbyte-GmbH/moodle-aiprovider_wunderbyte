@@ -30,6 +30,7 @@ $string['action_generate_embeddings'] = 'Generate embeddings';
 $string['action_generate_embeddings_desc'] = 'Generates embedding vectors for task catalog entries and user queries.';
 $string['action_generate_embeddings_help'] = 'Creates a vector representation of the provided input text.';
 $string['action_generate_embeddings_instruction'] = 'Return a vector embedding for the provided input text.';
+$string['action_generate_text_instruction'] = 'Follow the user instructions and return only the requested content.';
 $string['action_planner_decide'] = 'Planner decide';
 $string['action_planner_decide_desc'] = 'Selects the best task from candidate matches and produces routing decisions.';
 $string['action_planner_decide_help'] = 'Chooses the most suitable task candidate and outputs a structured decision.';

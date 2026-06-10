@@ -25,6 +25,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'aiprovider_wunderbyte';
-$plugin->version = 2026051600;
+$plugin->version = 2026061000;
 $plugin->requires = 2025092600;
 $plugin->maturity = MATURITY_BETA;
