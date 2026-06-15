@@ -43,3 +43,20 @@ $string['model'] = 'Model';
 $string['pluginname'] = 'Wunderbyte AI provider';
 
 $string['systeminstruction'] = 'System instruction';
+
+// Capability.
+$string['wunderbyte:viewusage'] = 'View AI credit usage for the Wunderbyte provider';
+
+// Usage bar.
+$string['usage_expires'] = 'Key expires {$a}';
+$string['usage_heading'] = 'AI credit';
+$string['usage_left'] = '{$a} left';
+$string['usage_remaining'] = '{$a->remaining} of {$a->total} remaining';
+$string['usage_reset_days'] = 'Resets in {$a} days';
+$string['usage_reset_today'] = 'Resets today';
+$string['usage_reset_tomorrow'] = 'Resets tomorrow';
+$string['usage_spent'] = '{$a->spend} used';
+$string['usage_unavailable'] = 'Usage information is currently unavailable.';
+$string['usage_unconfigured'] = 'Add an API key to see your remaining AI credit.';
+$string['usage_unlimited'] = 'Unlimited';
+$string['usage_unlimited_detail'] = 'No spending limit on this key.';

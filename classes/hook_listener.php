@@ -36,10 +36,28 @@ class hook_listener {
             return;
         }
 
+        global $PAGE;
+
         $mform = $hook->mform;
         $mform->addElement('passwordunmask', 'apikey', get_string('apikey', 'aiprovider_wunderbyte'), ['size' => 75]);
         $mform->setType('apikey', PARAM_TEXT);
         $mform->addRule('apikey', get_string('required'), 'required', null, 'client');
         $mform->addHelpButton('apikey', 'apikey', 'aiprovider_wunderbyte');
+
+        // Show the live AI credit/usage bar for managers and admins. The bar
+        // reads the instance id from the form at runtime (see initFromForm).
+        if (has_capability('aiprovider/wunderbyte:viewusage', \context_system::instance())) {
+            $mform->addElement(
+                'static',
+                'usagebar',
+                get_string('usage_heading', 'aiprovider_wunderbyte'),
+                \html_writer::div('', '', ['data-region' => 'wb-usage-bar']),
+            );
+            $PAGE->requires->js_call_amd(
+                'aiprovider_wunderbyte/usage_bar',
+                'initFromForm',
+                ['[data-region="wb-usage-bar"]'],
+            );
+        }
     }
 }
