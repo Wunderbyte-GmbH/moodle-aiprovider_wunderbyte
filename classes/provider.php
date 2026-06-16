@@ -153,7 +153,9 @@ class provider extends \core_ai\provider {
             return usage::unavailable('badresponse', 'Response had no "info" object.');
         }
 
-        return usage::from_key_info($info);
+        // The Wunderbyte LiteLLM proxy denominates all budgets in EUR; /key/info
+        // itself carries no currency code, so state it explicitly here.
+        return usage::from_key_info($info, 'EUR');
     }
 
     /**
