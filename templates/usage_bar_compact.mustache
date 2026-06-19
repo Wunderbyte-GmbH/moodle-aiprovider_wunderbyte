@@ -34,8 +34,12 @@
     }
 }}
 <span class="aiprovider-wunderbyte-usage-compact d-inline-flex align-items-center" data-region="wb-usage">
+    {{!
+        Trial/usage (compact): a percentage badge (colour by usage) with the reset/
+        expiry in the tooltip. Deliberately NO money amounts.
+    }}
     {{#isok}}
-        <span class="badge {{badgeclass}}" title="{{remaininglabel}} · {{spentlabel}}{{#resetlabel}} · {{resetlabel}}{{/resetlabel}}">{{shortlabel}}</span>
+        <span class="badge {{badgeclass}}" title="{{#resetlabel}}{{resetlabel}}{{/resetlabel}}{{^resetlabel}}{{expireslabel}}{{/resetlabel}}">{{shortlabel}}</span>
     {{/isok}}
     {{#isunlimited}}
         <span class="badge badge-info" title="{{unlimiteddetail}}">{{unlimitedlabel}}</span>

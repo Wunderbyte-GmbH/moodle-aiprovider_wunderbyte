@@ -120,13 +120,20 @@ class provider extends \core_ai\provider {
             return usage::unavailable('unconfigured');
         }
 
-        $endpoint = $this->get_management_endpoint();
+        // Usage is read via the privacy-preserving gateway: we POST our own key and
+        // the gateway (master-key side) returns ONLY a percentage + reset/expiry —
+        // never euro amounts. The key itself has no /key/info route, so the raw
+        // spend/budget can no longer be read here at all.
+        $endpoint = $this->get_usage_gateway_endpoint();
         if ($endpoint === null) {
-            return usage::unavailable('unsupported', 'No action endpoint configured to derive the management URL from.');
+            return usage::unavailable('unsupported', 'No action endpoint configured to derive the usage gateway URL from.');
         }
 
-        $request = $this->add_authentication_headers(
-            new Request('GET', $endpoint, ['Accept' => 'application/json']),
+        $request = new Request(
+            'POST',
+            $endpoint,
+            ['Accept' => 'application/json', 'Content-Type' => 'application/json'],
+            json_encode(['apikey' => (string)$this->config['apikey']]),
         );
 
         $client = \core\di::get(http_client::class);
@@ -134,28 +141,34 @@ class provider extends \core_ai\provider {
             $response = $client->send($request, [RequestOptions::HTTP_ERRORS => false]);
         } catch (GuzzleException $e) {
             debugging('aiprovider_wunderbyte usage lookup failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
-            return usage::unavailable('http', 'Request to ' . $endpoint . ' failed: ' . $e->getMessage());
+            return usage::unavailable('http', 'Request to the usage gateway failed: ' . $e->getMessage());
         }
 
         $status = $response->getStatusCode();
         if ($status !== 200) {
-            return usage::unavailable('http', 'GET ' . $endpoint . ' returned HTTP ' . $status . '.');
+            return usage::unavailable('http', 'Usage gateway returned HTTP ' . $status . '.');
         }
 
         $body = json_decode($response->getBody()->getContents(), true);
         if (!is_array($body)) {
-            return usage::unavailable('badresponse', 'Response from ' . $endpoint . ' was not a JSON object.');
+            return usage::unavailable('badresponse', 'Usage gateway response was not a JSON object.');
         }
 
-        // LiteLLM returns {"key": "...", "info": {...}}; tolerate a flat shape too.
-        $info = $body['info'] ?? $body;
-        if (!is_array($info)) {
-            return usage::unavailable('badresponse', 'Response had no "info" object.');
-        }
+        return usage::from_gateway($body);
+    }
 
-        // The Wunderbyte LiteLLM proxy denominates all budgets in EUR; /key/info
-        // itself carries no currency code, so state it explicitly here.
-        return usage::from_key_info($info, 'EUR');
+    /**
+     * Derive the privacy-preserving usage gateway URL (POST /api/shop/usage) from
+     * the configured action endpoint's base.
+     *
+     * @return UriInterface|null
+     */
+    protected function get_usage_gateway_endpoint(): ?UriInterface {
+        $base = $this->get_configured_base_uri();
+        if ($base === null) {
+            return null;
+        }
+        return $base->withPath('/api/shop/usage')->withQuery('')->withFragment('');
     }
 
     /**

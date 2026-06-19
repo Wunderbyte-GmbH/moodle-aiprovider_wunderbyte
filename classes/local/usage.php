@@ -62,6 +62,8 @@ class usage {
         public readonly ?int $resetat,
         /** @var int|null Unix timestamp when the key expires, or null. */
         public readonly ?int $expiresat,
+        /** @var float|null Percent of budget used (0-100), or null when unlimited/unknown. */
+        public readonly ?float $percentused,
         /** @var string|null Machine-readable error code when not available. */
         public readonly ?string $error,
         /** @var string|null Human-readable diagnostic detail (never contains secrets). */
@@ -87,6 +89,9 @@ class usage {
         $hasbudget = array_key_exists('max_budget', $info) && $info['max_budget'] !== null;
         $maxbudget = $hasbudget ? (float)$info['max_budget'] : null;
         $remaining = $hasbudget ? max(0.0, $maxbudget - $spend) : null;
+        $percentused = ($hasbudget && $maxbudget > 0)
+            ? min(100.0, max(0.0, ($spend / $maxbudget) * 100))
+            : null;
 
         return new self(
             available: true,
@@ -98,6 +103,42 @@ class usage {
             budgetduration: !empty($info['budget_duration']) ? (string)$info['budget_duration'] : null,
             resetat: self::to_timestamp($info['budget_reset_at'] ?? null),
             expiresat: self::to_timestamp($info['expires'] ?? null),
+            percentused: $percentused,
+            error: null,
+        );
+    }
+
+    /**
+     * Build a usage object from the privacy-preserving gateway response.
+     *
+     * The gateway ({@see POST /api/shop/usage}) deliberately returns only a
+     * percentage and reset/expiry timing — never euro amounts — so this object
+     * carries no money fields (spend/maxbudget/remaining stay null).
+     *
+     * @param array $payload Decoded gateway response: {state, percent, resetat, expiresat}.
+     * @return self
+     */
+    public static function from_gateway(array $payload): self {
+        $state = (string)($payload['state'] ?? 'unavailable');
+        if ($state === 'unavailable') {
+            return self::unavailable('gateway');
+        }
+        $unlimited = ($state === 'unlimited');
+        $percent = (!$unlimited && isset($payload['percent']) && $payload['percent'] !== null)
+            ? (float)$payload['percent']
+            : null;
+
+        return new self(
+            available: true,
+            unlimited: $unlimited,
+            spend: null,
+            maxbudget: null,
+            remaining: null,
+            currency: 'EUR',
+            budgetduration: null,
+            resetat: self::to_timestamp($payload['resetat'] ?? null),
+            expiresat: self::to_timestamp($payload['expiresat'] ?? null),
+            percentused: $percent,
             error: null,
         );
     }
@@ -120,6 +161,7 @@ class usage {
             budgetduration: null,
             resetat: null,
             expiresat: null,
+            percentused: null,
             error: $error,
             detail: $detail,
         );
@@ -148,10 +190,7 @@ class usage {
      * @return float|null
      */
     public function percent_used(): ?float {
-        if (!$this->available || $this->unlimited || empty($this->maxbudget)) {
-            return null;
-        }
-        return min(100.0, max(0.0, ($this->spend / $this->maxbudget) * 100));
+        return $this->percentused;
     }
 
     /**

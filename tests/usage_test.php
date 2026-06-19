@@ -68,6 +68,35 @@ final class usage_test extends \advanced_testcase {
     }
 
     /**
+     * The privacy-preserving gateway factory carries a percentage + timing, but
+     * never any money fields (spend/maxbudget/remaining stay null).
+     */
+    public function test_from_gateway(): void {
+        $usage = usage::from_gateway([
+            'state' => 'ok',
+            'percent' => 60.0,
+            'percent_remaining' => 40.0,
+            'resetat' => '2026-07-01T00:00:00Z',
+        ]);
+
+        $this->assertTrue($usage->available);
+        $this->assertFalse($usage->unlimited);
+        $this->assertEqualsWithDelta(60.0, $usage->percent_used(), 0.0001);
+        $this->assertSame(strtotime('2026-07-01T00:00:00Z'), $usage->resetat);
+
+        // No money must ever come back from the gateway.
+        $this->assertNull($usage->spend);
+        $this->assertNull($usage->maxbudget);
+        $this->assertNull($usage->remaining);
+        $this->assertNull($usage->to_array()['spend']);
+
+        // Unlimited and unavailable states.
+        $this->assertTrue(usage::from_gateway(['state' => 'unlimited'])->unlimited);
+        $this->assertNull(usage::from_gateway(['state' => 'unlimited'])->percent_used());
+        $this->assertFalse(usage::from_gateway(['state' => 'unavailable'])->available);
+    }
+
+    /**
      * An absent max_budget key is also treated as "no limit".
      */
     public function test_no_limit_absent_budget(): void {

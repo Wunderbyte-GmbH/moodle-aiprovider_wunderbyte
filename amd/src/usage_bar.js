@@ -50,22 +50,6 @@ const resolveNode = (target) => {
 };
 
 /**
- * Format an amount in the given currency using the browser locale.
- *
- * @param {number} amount The amount.
- * @param {string} currency ISO currency code.
- * @return {string}
- */
-const formatMoney = (amount, currency) => {
-    try {
-        return new Intl.NumberFormat(undefined, {style: 'currency', currency}).format(amount);
-    } catch (e) {
-        // Unknown currency code: fall back to a plain number plus the code.
-        return `${Number(amount).toFixed(2)} ${currency}`;
-    }
-};
-
-/**
  * Format a unix timestamp as a localised date.
  *
  * @param {number} timestamp Seconds since the epoch.
@@ -130,16 +114,9 @@ const buildContext = async(data) => {
         return {heading, isunlimited: true, unlimitedlabel, unlimiteddetail};
     }
 
-    // Normal capped budget.
-    const currency = data.currency || 'USD';
+    // Capped budget: show ONLY a percentage + reset/expiry — never money amounts.
     const percent = Math.round(data.percentused || 0);
-    const [remaininglabel, spentlabel] = await Promise.all([
-        getString('usage_remaining', COMPONENT, {
-            remaining: formatMoney(data.remaining, currency),
-            total: formatMoney(data.maxbudget, currency),
-        }),
-        getString('usage_spent', COMPONENT, {spend: formatMoney(data.spend, currency)}),
-    ]);
+    const percentremaining = Math.max(0, 100 - percent);
 
     const context = {
         heading,
@@ -148,9 +125,8 @@ const buildContext = async(data) => {
         barclass: barClass(percent),
         // Compact (header) variant reuses the same colour thresholds as a badge.
         badgeclass: barClass(percent).replace('bg-', 'badge-'),
-        shortlabel: await getString('usage_left', COMPONENT, formatMoney(data.remaining, currency)),
-        remaininglabel,
-        spentlabel,
+        shortlabel: await getString('usage_percent_remaining', COMPONENT, percentremaining),
+        usedlabel: await getString('usage_percent_used', COMPONENT, percent),
         resetlabel: '',
         expireslabel: '',
     };
@@ -201,6 +177,12 @@ export const render = async(target, providerid = 0, options = {}) => {
     }
     try {
         const data = await fetchUsage(parseInt(providerid, 10) || 0);
+        // In the compact (header / agent) variant an "unavailable" message is just noise —
+        // render nothing rather than telling the user usage couldn't be read.
+        if (options.compact && !data.available) {
+            node.innerHTML = '';
+            return;
+        }
         const context = await buildContext(data);
         const template = options.compact ? TEMPLATE_COMPACT : TEMPLATE;
         const {html, js} = await Templates.renderForPromise(template, context);
