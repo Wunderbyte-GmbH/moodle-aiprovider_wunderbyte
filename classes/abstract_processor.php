@@ -58,7 +58,11 @@ abstract class abstract_processor extends process_base {
      */
     protected function get_model_settings(): array {
         $settings = $this->provider->actionconfig[$this->action::class]['settings'];
-        unset($settings['model'], $settings['endpoint'], $settings['systeminstruction']);
+        // Strip control/meta keys that are NOT model parameters before they get spread into the request
+        // body: model/endpoint/systeminstruction are consumed separately, and providerid is a Moodle-internal
+        // form field that must never reach the LLM API (OpenAI-style endpoints reject it outright with
+        // "Unknown parameter: 'providerid'", which empties the response — e.g. the gpt-5-mini route).
+        unset($settings['model'], $settings['endpoint'], $settings['systeminstruction'], $settings['providerid']);
         return $settings;
     }
 
@@ -119,6 +123,21 @@ abstract class abstract_processor extends process_base {
      */
     protected function handle_api_error(ResponseInterface $response): array {
         $status = $response->getStatusCode();
+
+        // Rate limit (429) or temporary overload (503): the user is not at fault and the
+        // condition is transient. Show ONE clear, localized, actionable message instead of
+        // a generic provider error. We return the curated string directly (core_ai hides
+        // the provider message in non-developer mode), so the user always gets the guidance.
+        if ($status === 429 || $status === 503) {
+            $message = get_string('error:busy', 'aiprovider_wunderbyte');
+            return [
+                'success' => false,
+                'errorcode' => $status,
+                'error' => $message,
+                'errormessage' => $message,
+            ];
+        }
+
         if ($status >= 500 && $status < 600) {
             $errormessage = $response->getReasonPhrase();
         } else {

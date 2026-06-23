@@ -39,6 +39,7 @@ $string['apikey'] = 'API key';
 $string['apikey_help'] = 'API key for the Wunderbyte OpenAI-compatible endpoint.';
 $string['dimensions'] = 'Embedding dimensions';
 $string['endpoint'] = 'API endpoint';
+$string['error:busy'] = 'The AI service is currently very busy. Please try again in a few minutes.';
 $string['model'] = 'Model';
 $string['pluginname'] = 'Wunderbyte AI provider';
 
