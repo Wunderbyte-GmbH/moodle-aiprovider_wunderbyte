@@ -58,6 +58,18 @@ class action_chat_form extends action_settings_form {
                 get_string("action_{$actionname}_instruction", 'aiprovider_wunderbyte'),
         );
 
+        // Free-form extra request parameters as JSON, merged verbatim into the request body. Use this to
+        // enforce a hard output cap, e.g. {"max_tokens": 500} (or {"max_completion_tokens": 500} for newer models).
+        $mform->addElement(
+            'textarea',
+            'modelextraparams',
+            get_string('extraparams', 'aiprovider_wunderbyte'),
+            ['rows' => 5, 'cols' => 60],
+        );
+        $mform->setType('modelextraparams', PARAM_TEXT);
+        $mform->setDefault('modelextraparams', $actionconfig['modelextraparams'] ?? '');
+        $mform->addElement('static', 'modelextraparams_help', null, get_string('extraparams_help', 'aiprovider_wunderbyte'));
+
         $mform->addElement('hidden', 'action', $this->_customdata['action']);
         $mform->setType('action', PARAM_TEXT);
         $mform->addElement('hidden', 'provider', $providername);
@@ -71,5 +83,19 @@ class action_chat_form extends action_settings_form {
         }
 
         $this->set_data($this->_customdata['actionconfig'] ?? []);
+    }
+
+    #[\Override]
+    public function validation($data, $files): array {
+        $errors = parent::validation($data, $files);
+
+        if (!empty($data['modelextraparams'])) {
+            json_decode($data['modelextraparams']);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $errors['modelextraparams'] = get_string('invalidjson', 'aiprovider_wunderbyte');
+            }
+        }
+
+        return $errors;
     }
 }

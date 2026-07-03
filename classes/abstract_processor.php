@@ -58,11 +58,28 @@ abstract class abstract_processor extends process_base {
      */
     protected function get_model_settings(): array {
         $settings = $this->provider->actionconfig[$this->action::class]['settings'];
+        // Merge the free-form extra parameters (JSON, e.g. {"max_tokens": 500}) into the settings so they
+        // are spread into the request body — this is how a hard output cap is enforced at the provider.
+        if (!empty($settings['modelextraparams'])) {
+            $params = json_decode($settings['modelextraparams'], true);
+            if (is_array($params)) {
+                foreach ($params as $key => $value) {
+                    $settings[$key] = $value;
+                }
+            }
+        }
         // Strip control/meta keys that are NOT model parameters before they get spread into the request
-        // body: model/endpoint/systeminstruction are consumed separately, and providerid is a Moodle-internal
+        // body: model/endpoint/systeminstruction are consumed separately, providerid is a Moodle-internal
         // form field that must never reach the LLM API (OpenAI-style endpoints reject it outright with
-        // "Unknown parameter: 'providerid'", which empties the response — e.g. the gpt-5-mini route).
-        unset($settings['model'], $settings['endpoint'], $settings['systeminstruction'], $settings['providerid']);
+        // "Unknown parameter: 'providerid'", which empties the response — e.g. the gpt-5-mini route), and
+        // modelextraparams is the raw JSON container, already unpacked above.
+        unset(
+            $settings['model'],
+            $settings['endpoint'],
+            $settings['systeminstruction'],
+            $settings['providerid'],
+            $settings['modelextraparams'],
+        );
         return $settings;
     }
 

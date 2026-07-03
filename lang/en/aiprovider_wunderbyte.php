@@ -40,6 +40,9 @@ $string['apikey_help'] = 'API key for the Wunderbyte OpenAI-compatible endpoint.
 $string['dimensions'] = 'Embedding dimensions';
 $string['endpoint'] = 'API endpoint';
 $string['error:busy'] = 'The AI service is currently very busy. Please try again in a few minutes.';
+$string['extraparams'] = 'Extra parameters';
+$string['extraparams_help'] = 'Optional extra request parameters as JSON, merged verbatim into the request body sent to the model. Use this to enforce a hard output limit, for example: {"max_tokens": 500}. Newer models may require {"max_completion_tokens": 500} instead.';
+$string['invalidjson'] = 'Invalid JSON string';
 $string['model'] = 'Model';
 $string['pluginname'] = 'Wunderbyte AI provider';
 
