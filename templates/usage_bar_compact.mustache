@@ -46,6 +46,9 @@
     {{/isok}}
     {{#isexpired}}
         <span class="badge badge-danger" title="{{expireddetail}}">{{expiredlabel}}</span>
+        {{#shopurl}}
+            <a class="small ml-1" href="{{shopurl}}" target="_blank" rel="noopener">{{buylabel}}</a>
+        {{/shopurl}}
     {{/isexpired}}
     {{#isunlimited}}
         <span class="badge badge-info" title="{{unlimiteddetail}}">{{unlimitedlabel}}</span>

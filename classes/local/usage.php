@@ -42,6 +42,8 @@ class usage {
      * @param int|null $resetat Unix timestamp when spend resets, or null.
      * @param int|null $expiresat Unix timestamp when the key expires, or null.
      * @param string|null $error Machine-readable error code when not available.
+     * @param string|null $detail Human-readable diagnostic detail (never contains secrets).
+     * @param string|null $shopurl URL where new credit can be purchased, or null.
      */
     private function __construct(
         /** @var bool Whether usage data could be read at all. */
@@ -68,6 +70,8 @@ class usage {
         public readonly ?string $error,
         /** @var string|null Human-readable diagnostic detail (never contains secrets). */
         public readonly ?string $detail = null,
+        /** @var string|null URL where new credit can be purchased, or null. */
+        public readonly ?string $shopurl = null,
     ) {
     }
 
@@ -115,7 +119,7 @@ class usage {
      * percentage and reset/expiry timing — never euro amounts — so this object
      * carries no money fields (spend/maxbudget/remaining stay null).
      *
-     * @param array $payload Decoded gateway response: {state, percent, resetat, expiresat}.
+     * @param array $payload Decoded gateway response: {state, percent, resetat, expiresat, shopurl}.
      * @return self
      */
     public static function from_gateway(array $payload): self {
@@ -127,6 +131,9 @@ class usage {
         $percent = (!$unlimited && isset($payload['percent']) && $payload['percent'] !== null)
             ? (float)$payload['percent']
             : null;
+        // The gateway may point to a purchase page for new credit; validate it is a
+        // sane http(s) URL before it ever reaches a template.
+        $shopurl = clean_param((string)($payload['shopurl'] ?? ''), PARAM_URL);
 
         return new self(
             available: true,
@@ -140,6 +147,7 @@ class usage {
             expiresat: self::to_timestamp($payload['expiresat'] ?? null),
             percentused: $percent,
             error: null,
+            shopurl: $shopurl !== '' ? $shopurl : null,
         );
     }
 
@@ -212,6 +220,7 @@ class usage {
             'percentused' => $this->percent_used(),
             'error' => $this->error,
             'detail' => $this->detail,
+            'shopurl' => $this->shopurl,
         ];
     }
 }

@@ -128,6 +128,7 @@ class get_usage extends external_api {
             'percentused' => new external_value(PARAM_FLOAT, 'Percent of budget spent (0-100).', VALUE_OPTIONAL),
             'error' => new external_value(PARAM_ALPHANUMEXT, 'Machine-readable error code when unavailable.', VALUE_OPTIONAL),
             'detail' => new external_value(PARAM_RAW, 'Human-readable diagnostic detail (no secrets).', VALUE_OPTIONAL),
+            'shopurl' => new external_value(PARAM_URL, 'URL where new AI credit can be purchased.', VALUE_OPTIONAL),
         ]);
     }
 }

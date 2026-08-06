@@ -97,6 +97,27 @@ final class usage_test extends \advanced_testcase {
     }
 
     /**
+     * The gateway's purchase URL is passed through when valid and dropped otherwise.
+     */
+    public function test_from_gateway_shopurl(): void {
+        $usage = usage::from_gateway([
+            'state' => 'ok',
+            'percent' => 10.0,
+            'shopurl' => 'https://example.com/shop.html',
+        ]);
+        $this->assertSame('https://example.com/shop.html', $usage->shopurl);
+        $this->assertSame('https://example.com/shop.html', $usage->to_array()['shopurl']);
+
+        // Absent or invalid URLs never reach the templates.
+        $this->assertNull(usage::from_gateway(['state' => 'ok', 'percent' => 10.0])->shopurl);
+        $this->assertNull(usage::from_gateway([
+            'state' => 'ok',
+            'percent' => 10.0,
+            'shopurl' => 'javascript:alert(1)',
+        ])->shopurl);
+    }
+
+    /**
      * An absent max_budget key is also treated as "no limit".
      */
     public function test_no_limit_absent_budget(): void {

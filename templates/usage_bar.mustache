@@ -38,6 +38,8 @@
     * dayslabel string Optional "X days left" urgency label (expiry within 30 days).
     * expiredlabel string Badge label for the expired state.
     * expireddetail string Detail line for the expired state.
+    * shopurl string Optional URL where new credit can be purchased (expired state).
+    * buylabel string Label for the shopurl link.
     * unlimitedlabel string Headline for the unlimited state.
     * unlimiteddetail string Detail for the unlimited state.
     * message string Message for unavailable/unconfigured states.
@@ -83,6 +85,9 @@
         <div class="small">
             <span class="badge badge-danger">{{expiredlabel}}</span>
             <span class="text-muted">{{expireddetail}}</span>
+            {{#shopurl}}
+                <a class="ml-1" href="{{shopurl}}" target="_blank" rel="noopener">{{buylabel}}</a>
+            {{/shopurl}}
         </div>
     {{/isexpired}}
 

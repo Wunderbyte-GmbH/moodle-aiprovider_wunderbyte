@@ -121,7 +121,14 @@ const buildContext = async(data) => {
             getString('usage_expired', COMPONENT),
             getString('usage_expired_on', COMPONENT, formatDate(data.expiresat)),
         ]);
-        return {heading, isexpired: true, expiredlabel, expireddetail};
+        const context = {heading, isexpired: true, expiredlabel, expireddetail};
+        // Purchase hint only when the gateway names a shop page (our own service);
+        // configured foreign endpoints never deliver one.
+        if (data.shopurl) {
+            context.shopurl = data.shopurl;
+            context.buylabel = await getString('usage_buy_new', COMPONENT);
+        }
+        return context;
     }
 
     // Capped budget: show ONLY a percentage + reset/expiry — never money amounts.
