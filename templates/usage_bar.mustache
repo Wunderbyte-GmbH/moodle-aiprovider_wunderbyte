@@ -35,6 +35,9 @@
     * spentlabel string e.g. "$0.83 used" (ok state only).
     * resetlabel string Optional reset-date label.
     * expireslabel string Optional expiry-date label.
+    * dayslabel string Optional "X days left" urgency label (expiry within 30 days).
+    * expiredlabel string Badge label for the expired state.
+    * expireddetail string Detail line for the expired state.
     * unlimitedlabel string Headline for the unlimited state.
     * unlimiteddetail string Detail for the unlimited state.
     * message string Message for unavailable/unconfigured states.
@@ -70,10 +73,18 @@
             <span>{{usedlabel}}</span>
             <span>
                 {{#resetlabel}}{{resetlabel}}{{/resetlabel}}
-                {{^resetlabel}}{{#expireslabel}}{{expireslabel}}{{/expireslabel}}{{/resetlabel}}
+                {{#expireslabel}}{{#resetlabel}} &middot; {{/resetlabel}}{{expireslabel}}{{/expireslabel}}
+                {{#dayslabel}}<span class="badge badge-warning">{{dayslabel}}</span>{{/dayslabel}}
             </span>
         </div>
     {{/isok}}
+
+    {{#isexpired}}
+        <div class="small">
+            <span class="badge badge-danger">{{expiredlabel}}</span>
+            <span class="text-muted">{{expireddetail}}</span>
+        </div>
+    {{/isexpired}}
 
     {{#isunlimited}}
         <div class="small text-muted">{{unlimiteddetail}}</div>

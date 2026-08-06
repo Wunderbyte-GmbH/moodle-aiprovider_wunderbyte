@@ -52,6 +52,9 @@ $string['systeminstruction'] = 'System instruction';
 $string['wunderbyte:viewusage'] = 'View AI credit usage for the Wunderbyte provider';
 
 // Usage bar.
+$string['usage_days_left'] = '{$a} days left';
+$string['usage_expired'] = 'Expired';
+$string['usage_expired_on'] = 'Key expired on {$a}';
 $string['usage_expires'] = 'Key expires {$a}';
 $string['usage_heading'] = 'AI credit';
 $string['usage_left'] = '{$a} left';

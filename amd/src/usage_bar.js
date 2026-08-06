@@ -114,6 +114,16 @@ const buildContext = async(data) => {
         return {heading, isunlimited: true, unlimitedlabel, unlimiteddetail};
     }
 
+    // A key past its expiry is dead regardless of remaining budget — showing
+    // "X% left" here would be a lie, so the expired state wins over the bar.
+    if (data.expiresat && data.expiresat * 1000 <= Date.now()) {
+        const [expiredlabel, expireddetail] = await Promise.all([
+            getString('usage_expired', COMPONENT),
+            getString('usage_expired_on', COMPONENT, formatDate(data.expiresat)),
+        ]);
+        return {heading, isexpired: true, expiredlabel, expireddetail};
+    }
+
     // Capped budget: show ONLY a percentage + reset/expiry — never money amounts.
     const percent = Math.round(data.percentused || 0);
     const percentremaining = Math.max(0, 100 - percent);
@@ -145,6 +155,12 @@ const buildContext = async(data) => {
     }
     if (data.expiresat) {
         context.expireslabel = await getString('usage_expires', COMPONENT, formatDate(data.expiresat));
+        // A fixed expiry closer than 30 days is urgent enough to surface next to
+        // the credit itself (trial keys live for 30 days in total).
+        const days = daysUntil(data.expiresat);
+        if (days <= 30) {
+            context.dayslabel = await getString('usage_days_left', COMPONENT, days);
+        }
     }
 
     return context;

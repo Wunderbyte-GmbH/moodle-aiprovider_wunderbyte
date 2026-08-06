@@ -40,7 +40,13 @@
     }}
     {{#isok}}
         <span class="badge {{badgeclass}}" title="{{#resetlabel}}{{resetlabel}}{{/resetlabel}}{{^resetlabel}}{{expireslabel}}{{/resetlabel}}">{{shortlabel}}</span>
+        {{#dayslabel}}
+            <span class="badge badge-warning ml-1" title="{{expireslabel}}">{{dayslabel}}</span>
+        {{/dayslabel}}
     {{/isok}}
+    {{#isexpired}}
+        <span class="badge badge-danger" title="{{expireddetail}}">{{expiredlabel}}</span>
+    {{/isexpired}}
     {{#isunlimited}}
         <span class="badge badge-info" title="{{unlimiteddetail}}">{{unlimitedlabel}}</span>
     {{/isunlimited}}
