@@ -93,6 +93,50 @@ final class process_generate_text_test extends \advanced_testcase {
     }
 
     /**
+     * The site identifies itself in the request payload: attach_site_metadata adds
+     * metadata.moodle_site (the wwwroot) so the LiteLLM proxy can attribute the API
+     * key to the sites actually using it - without any additional call.
+     */
+    public function test_attach_site_metadata_adds_wwwroot(): void {
+        global $CFG;
+
+        $processor = new process_generate_text($this->provider, $this->action);
+
+        $method = new \ReflectionMethod($processor, 'create_request_object');
+        $request = $method->invoke($processor, 1);
+
+        $attach = new \ReflectionMethod($processor, 'attach_site_metadata');
+        $request = $attach->invoke($processor, $request);
+
+        $body = (object) json_decode($request->getBody()->getContents());
+        $this->assertSame($CFG->wwwroot, $body->metadata->moodle_site);
+        // The payload itself stays intact.
+        $this->assertEquals('This is a test prompt', $body->messages[1]->content);
+    }
+
+    /**
+     * Existing metadata in the payload is preserved, only moodle_site is added.
+     */
+    public function test_attach_site_metadata_preserves_existing_metadata(): void {
+        global $CFG;
+
+        $processor = new process_generate_text($this->provider, $this->action);
+
+        $body = (object) [
+            'model' => 'test',
+            'metadata' => (object) ['tags' => ['abc']],
+        ];
+        $request = new \GuzzleHttp\Psr7\Request('POST', '', [], json_encode($body));
+
+        $attach = new \ReflectionMethod($processor, 'attach_site_metadata');
+        $request = $attach->invoke($processor, $request);
+
+        $result = (object) json_decode($request->getBody()->getContents());
+        $this->assertSame($CFG->wwwroot, $result->metadata->moodle_site);
+        $this->assertSame(['abc'], $result->metadata->tags);
+    }
+
+    /**
      * Test create_request_object with extra model settings.
      */
     public function test_create_request_object_with_model_settings(): void {

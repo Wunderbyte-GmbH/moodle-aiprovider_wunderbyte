@@ -108,11 +108,38 @@ abstract class abstract_processor extends process_base {
      */
     abstract protected function handle_api_success(ResponseInterface $response): array;
 
+    /**
+     * Identify this site in the request payload via LiteLLM request metadata.
+     *
+     * The proxy uses metadata.moodle_site to attribute API keys to the Moodle sites
+     * actually using them (key management and support) - no separate call, the value
+     * rides on the requests that are sent anyway. The transmission is documented in
+     * the privacy provider and in README "Data & privacy". `metadata` is a
+     * first-class request field on LiteLLM and the OpenAI chat API.
+     *
+     * @param RequestInterface $request
+     * @return RequestInterface
+     */
+    protected function attach_site_metadata(RequestInterface $request): RequestInterface {
+        global $CFG;
+
+        $body = json_decode((string)$request->getBody());
+        if (!is_object($body)) {
+            return $request;
+        }
+        $metadata = (array)($body->metadata ?? []);
+        $metadata['moodle_site'] = (string)$CFG->wwwroot;
+        $body->metadata = (object)$metadata;
+
+        return $request->withBody(\GuzzleHttp\Psr7\Utils::streamFor(json_encode($body)));
+    }
+
     #[\Override]
     protected function query_ai_api(): array {
         $request = $this->create_request_object(
             userid: $this->provider->generate_userid($this->action->get_configuration('userid')),
         );
+        $request = $this->attach_site_metadata($request);
         $request = $this->provider->add_authentication_headers($request);
 
         $client = \core\di::get(http_client::class);

@@ -106,7 +106,14 @@ non‑secret diagnostic — the bar never blocks the settings form.
   `ai_action_planner_decide`, `ai_action_generate_agent_reply`,
   `ai_action_generate_embeddings` — capturing the prompt, generated content,
   finish reason and token counts. No API keys are stored in these tables.
-* A `privacy` provider is implemented for GDPR/privacy API compliance.
+* **Site identification:** every request carries the URL of the Moodle site
+  (`$CFG->wwwroot`) as request metadata (`metadata.moodle_site`). Wunderbyte uses
+  this exclusively to attribute the API key to the sites actually using it (key
+  management and support — e.g. showing which site a key belongs to). No
+  additional calls are made for this; the value rides on the requests the plugin
+  sends anyway, and no personal data is part of it.
+* A `privacy` provider is implemented for GDPR/privacy API compliance; the site
+  URL transmission is declared there as well.
 * Outbound HTTP uses Moodle's `core\http_client`, so site proxy and TLS
   settings apply.
 

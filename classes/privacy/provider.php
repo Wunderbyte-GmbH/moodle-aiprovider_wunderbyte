@@ -39,6 +39,7 @@ class provider implements
         $collection->add_external_location_link('aiprovider_wunderbyte', [
             'prompttext' => 'privacy:metadata:aiprovider_wunderbyte:prompttext',
             'model' => 'privacy:metadata:aiprovider_wunderbyte:model',
+            'moodle_site' => 'privacy:metadata:aiprovider_wunderbyte:moodle_site',
             'numberimages' => 'privacy:metadata:aiprovider_wunderbyte:numberimages',
             'responseformat' => 'privacy:metadata:aiprovider_wunderbyte:responseformat',
         ], 'privacy:metadata:aiprovider_wunderbyte:externalpurpose');

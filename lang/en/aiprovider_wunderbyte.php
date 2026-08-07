@@ -45,13 +45,16 @@ $string['extraparams_help'] = 'Optional extra request parameters as JSON, merged
 $string['invalidjson'] = 'Invalid JSON string';
 $string['model'] = 'Model';
 $string['pluginname'] = 'Wunderbyte AI provider';
+$string['privacy:metadata'] = 'The Wunderbyte AI provider plugin does not store any personal data.';
+$string['privacy:metadata:aiprovider_wunderbyte:externalpurpose'] = 'This information is sent to the Wunderbyte AI service (LiteLLM proxy) in order for a response to be generated. Request and response are logged on the Moodle site for accounting and auditing; the site URL is transmitted with each request so Wunderbyte can attribute the API key to the sites using it (key management and support).';
+$string['privacy:metadata:aiprovider_wunderbyte:model'] = 'The model used to generate the response.';
+$string['privacy:metadata:aiprovider_wunderbyte:moodle_site'] = 'The URL of this Moodle site (wwwroot), transmitted as request metadata so the API key can be attributed to the sites actually using it.';
+$string['privacy:metadata:aiprovider_wunderbyte:numberimages'] = 'When generating images the number of images used in the response.';
+$string['privacy:metadata:aiprovider_wunderbyte:prompttext'] = 'The user entered text prompt used to generate the response.';
+$string['privacy:metadata:aiprovider_wunderbyte:responseformat'] = 'The format of the response. When generating images.';
 
 $string['systeminstruction'] = 'System instruction';
 
-// Capability.
-$string['wunderbyte:viewusage'] = 'View AI credit usage for the Wunderbyte provider';
-
-// Usage bar.
 $string['usage_buy_new'] = 'Get new AI credit';
 $string['usage_days_left'] = '{$a} days left';
 $string['usage_expired'] = 'Expired';
@@ -70,3 +73,4 @@ $string['usage_unavailable'] = 'Usage information is currently unavailable.';
 $string['usage_unconfigured'] = 'Add an API key to see your remaining AI credit.';
 $string['usage_unlimited'] = 'Unlimited';
 $string['usage_unlimited_detail'] = 'No spending limit on this key.';
+$string['wunderbyte:viewusage'] = 'View AI credit usage for the Wunderbyte provider';
