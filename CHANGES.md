@@ -1,3 +1,6 @@
+## Version 2026081200
+* Bugfix: On Moodle 5.0 every AI call failed with "Unknown named parameter $error", because the custom action response classes passed the error name to core's response_base constructor whose $error parameter only exists from Moodle 5.1 on — the throw happened even for successful provider calls, so the agent always fell back to its generic error reply. The parameter is now only passed on cores that support it; on Moodle 5.0 the error name is carried in errormessage instead. (Wunderbyte-GmbH/Wunderbyte-GmbH#2187)
+
 ## Version 2026080602
 * Feature: Every request the provider sends to the LiteLLM proxy now carries `metadata: {moodle_site: wwwroot}` (central injection in `abstract_processor::query_ai_api`, covers all actions), so the proxy side can attribute API keys to the sites actually using them without any additional calls from customer systems. Documented in the README ("Data & privacy") and declared in the privacy provider. (Wunderbyte-GmbH/Wunderbyte-GmbH#2167)
 * Improvement: The plugin now requires Moodle 5.0.0 (build 2025041400, the first 5.0 release) as its minimum core version. (Wunderbyte-GmbH/Wunderbyte-GmbH#2186)
