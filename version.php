@@ -26,5 +26,5 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'aiprovider_wunderbyte';
 $plugin->version = 2026080601;
-$plugin->requires = 2025092600;
+$plugin->requires = 2025041400; // Moodle 5.0.0 (14 April 2025), the first 5.0 release.
 $plugin->maturity = MATURITY_BETA;
