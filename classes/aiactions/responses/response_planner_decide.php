@@ -24,6 +24,8 @@ namespace aiprovider_wunderbyte\aiactions\responses;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class response_planner_decide extends \core_ai\aiactions\responses\response_base {
+    use response_base_compat;
+
     /** @var string|null Provider response id. */
     private ?string $id = null;
 
@@ -51,13 +53,7 @@ class response_planner_decide extends \core_ai\aiactions\responses\response_base
      * @param string $errormessage Optional error message.
      */
     public function __construct(bool $success, int $errorcode = 0, string $error = '', string $errormessage = '') {
-        parent::__construct(
-            success: $success,
-            actionname: 'planner_decide',
-            errorcode: $errorcode,
-            error: $error,
-            errormessage: $errormessage,
-        );
+        $this->construct_response_base($success, 'planner_decide', $errorcode, $error, $errormessage);
     }
 
     #[\Override]
