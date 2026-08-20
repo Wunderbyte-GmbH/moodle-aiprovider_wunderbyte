@@ -149,7 +149,7 @@ abstract class abstract_processor extends process_base {
                 RequestOptions::HTTP_ERRORS => false,
             ]);
         } catch (RequestException $e) {
-            return \core_ai\error\factory::create($e->getCode(), $e->getMessage())->get_error_details();
+            return $this->build_error_details((int)$e->getCode(), $e->getMessage());
         }
 
         if ($response->getStatusCode() === 200) {
@@ -189,6 +189,31 @@ abstract class abstract_processor extends process_base {
             $errormessage = $bodyobj->error->message ?? $response->getReasonPhrase();
         }
 
-        return \core_ai\error\factory::create($status, $errormessage)->get_error_details();
+        return $this->build_error_details($status, (string)$errormessage);
+    }
+
+    /**
+     * Build the error-details array for a failed call.
+     *
+     * \core_ai\error\factory only exists on newer Moodle cores — the same compatibility class
+     * as the get_error() guard (agent commit 70d7ce8d) and the $error named-parameter fix
+     * (Wunderbyte-GmbH#2187). Older cores such as Moodle 5.0 get the plain array shape that
+     * core_ai consumes either way, matching the curated 429/503 branch above. Without this
+     * guard every failed call fatals with "Class not found", masking the real error.
+     *
+     * @param int $errorcode HTTP status or exception code.
+     * @param string $errormessage Human-readable error message.
+     * @return array
+     */
+    protected function build_error_details(int $errorcode, string $errormessage): array {
+        if (class_exists(\core_ai\error\factory::class)) {
+            return \core_ai\error\factory::create($errorcode, $errormessage)->get_error_details();
+        }
+        return [
+            'success' => false,
+            'errorcode' => $errorcode,
+            'error' => $errormessage,
+            'errormessage' => $errormessage,
+        ];
     }
 }
