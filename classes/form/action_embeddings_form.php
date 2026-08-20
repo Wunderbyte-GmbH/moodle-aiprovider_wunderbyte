@@ -42,7 +42,7 @@ class action_embeddings_form extends action_settings_form {
         $mform->addElement('text', 'model', get_string('model', 'aiprovider_wunderbyte'), ['size' => 40]);
         $mform->setType('model', PARAM_TEXT);
         $mform->addRule('model', null, 'required', null, 'client');
-        $mform->setDefault('model', $actionconfig['model'] ?? 'text-embedding-3-small');
+        $mform->setDefault('model', $actionconfig['model'] ?? 'wunderbyte-embeddings');
 
         $mform->addElement('text', 'dimensions', get_string('dimensions', 'aiprovider_wunderbyte'), ['size' => 10]);
         $mform->setType('dimensions', PARAM_INT);

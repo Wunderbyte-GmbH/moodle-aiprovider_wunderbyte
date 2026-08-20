@@ -43,7 +43,7 @@ class action_chat_form extends action_settings_form {
         $mform->addElement('text', 'model', get_string('model', 'aiprovider_wunderbyte'), ['size' => 40]);
         $mform->setType('model', PARAM_TEXT);
         $mform->addRule('model', null, 'required', null, 'client');
-        $mform->setDefault('model', $actionconfig['model'] ?? 'gpt-4o');
+        $mform->setDefault('model', $actionconfig['model'] ?? 'wunderbyte-privat');
 
         $mform->addElement(
             'textarea',
