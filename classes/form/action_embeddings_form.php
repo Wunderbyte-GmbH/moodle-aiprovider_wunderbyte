@@ -46,7 +46,10 @@ class action_embeddings_form extends action_settings_form {
 
         $mform->addElement('text', 'dimensions', get_string('dimensions', 'aiprovider_wunderbyte'), ['size' => 10]);
         $mform->setType('dimensions', PARAM_INT);
-        $mform->setDefault('dimensions', $actionconfig['dimensions'] ?? 1536);
+        // The wunderbyte-embeddings alias resolves to bge-multilingual-gemma2 upstream, which
+        // returns 3584-dim vectors; a mismatching stored value makes every vector unusable
+        // (unpack rejects on dimension mismatch), so the default must match the default model.
+        $mform->setDefault('dimensions', $actionconfig['dimensions'] ?? 3584);
 
         $mform->addElement('hidden', 'action', $this->_customdata['action']);
         $mform->setType('action', PARAM_TEXT);
