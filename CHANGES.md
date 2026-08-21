@@ -1,3 +1,6 @@
+## Version 2026082001
+* Bugfix: New provider instances defaulted the embeddings action to 1536 dimensions although the default model `wunderbyte-embeddings` (bge-multilingual-gemma2 upstream) returns 3584-dim vectors — consumers validating the vector length against the declared dimensions (e.g. the agent skill catalog) then discarded every stored vector. The default is now 3584; existing instances are unaffected and must be corrected manually. (Wunderbyte-GmbH/Wunderbyte-GmbH#2225)
+
 ## Version 2026082000
 * Bugfix: The action settings forms defaulted to OpenAI model names (`gpt-4o` for chat actions, `text-embedding-3-small` for embeddings) although the provider's default endpoint is the Wunderbyte LLM proxy. New provider instances now default to the Wunderbyte aliases `wunderbyte-privat` (chat) and `wunderbyte-embeddings` (embeddings, 1536 dimensions). Existing instances are unaffected. (Wunderbyte-GmbH/Wunderbyte-GmbH#2216)
 
