@@ -84,12 +84,15 @@ abstract class abstract_processor extends process_base {
     }
 
     /**
-     * Get the system instruction.
+     * Get the system instruction: the one set on the provider instance, empty by default.
+     *
+     * The provider sends no instruction of its own. Every caller brings its complete prompt, so switching a caller to
+     * another action changes the model, never the model's input (George 2026-09-30, Wunderbyte-GmbH/Wunderbyte-GmbH#2505).
      *
      * @return string
      */
     protected function get_system_instruction(): string {
-        return (string)$this->action::get_system_instruction();
+        return (string)($this->provider->actionconfig[$this->action::class]['settings']['systeminstruction'] ?? '');
     }
 
     /**

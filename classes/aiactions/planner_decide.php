@@ -69,12 +69,12 @@ class planner_decide extends base {
     }
 
     /**
-     * Default system instruction.
+     * Default system instruction: none. The caller brings its complete prompt (see abstract_processor).
      *
      * @return string
      */
     public static function get_system_instruction(): string {
-        return get_string('action_planner_decide_instruction', 'aiprovider_wunderbyte');
+        return '';
     }
 
     /**

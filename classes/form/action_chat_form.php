@@ -52,11 +52,8 @@ class action_chat_form extends action_settings_form {
             ['rows' => 6, 'cols' => 60],
         );
         $mform->setType('systeminstruction', PARAM_TEXT);
-        $mform->setDefault(
-            'systeminstruction',
-            $actionconfig['systeminstruction'] ??
-                get_string("action_{$actionname}_instruction", 'aiprovider_wunderbyte'),
-        );
+        // Empty by default: the provider sends no instruction of its own, every caller brings its complete prompt.
+        $mform->setDefault('systeminstruction', $actionconfig['systeminstruction'] ?? '');
 
         // Free-form extra request parameters as JSON, merged verbatim into the request body. Use this to
         // enforce a hard output cap, e.g. {"max_tokens": 500} (or {"max_completion_tokens": 500} for newer models).

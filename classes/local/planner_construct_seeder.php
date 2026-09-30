@@ -24,8 +24,8 @@ use aiprovider_wunderbyte\form\action_chat_form;
 /**
  * Adds the planner_construct action to provider instances created before the action existed.
  *
- * The new entry copies the planner_decide settings (endpoint, extra parameters, system instruction, enabled state)
- * and takes the model of generate_agent_reply - the instance's large model. Instances that already
+ * The new entry copies the planner_decide settings (endpoint, extra parameters, enabled state), takes the model of
+ * generate_agent_reply - the instance's large model - and has no system instruction. Instances that already
  * carry a planner_construct entry are never changed, so an admin's configuration survives every upgrade.
  *
  * @package    aiprovider_wunderbyte
@@ -74,9 +74,7 @@ class planner_construct_seeder {
         $settings['model'] = (string)($replysettings['model'] ?? '') !== ''
             ? (string)$replysettings['model']
             : action_chat_form::default_model('planner_construct');
-        if ((string)($settings['systeminstruction'] ?? '') === '') {
-            $settings['systeminstruction'] = planner_construct::get_system_instruction();
-        }
+        $settings['systeminstruction'] = '';
 
         return [
             'enabled' => array_key_exists('enabled', $decide) ? (bool)$decide['enabled'] : true,

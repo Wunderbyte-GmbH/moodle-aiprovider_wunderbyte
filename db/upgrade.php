@@ -37,5 +37,13 @@ function xmldb_aiprovider_wunderbyte_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026093000, 'aiprovider', 'wunderbyte');
     }
 
+    if ($oldversion < 2026093001) {
+        // The provider sends no instruction of its own any more: every caller brings its complete prompt. Empty the
+        // stored system instruction of every chat action, custom texts included (George 2026-09-30).
+        \aiprovider_wunderbyte\local\system_instruction_cleaner::clear_all();
+
+        upgrade_plugin_savepoint(true, 2026093001, 'aiprovider', 'wunderbyte');
+    }
+
     return true;
 }

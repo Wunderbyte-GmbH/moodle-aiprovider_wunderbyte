@@ -22,10 +22,8 @@ namespace aiprovider_wunderbyte\aiactions;
  * The agent's constructor phase builds the schema-bound parameters of the selected skill. It is the most
  * demanding planner call, so it gets its own action: the instance configures model and extra parameters for it
  * separately from the selector (planner_decide), and the action register reports its calls separately. The request
- * and the stored record are the same as for planner_decide; the record goes into the planner_decide table. The system
- * instruction is inherited on purpose: the agent's constructor prompt must reach the model byte for byte as before the
- * action existed, only the model may differ (a different instruction measurably changed the answers in baseline run L56,
- * Wunderbyte-GmbH/Wunderbyte-GmbH#2505).
+ * and the stored record are the same as for planner_decide; the record goes into the planner_decide table. Like every
+ * action of this provider it sends no instruction of its own, so only the model may differ from planner_decide.
  *
  * @package    aiprovider_wunderbyte
  * @copyright  2026 Wunderbyte GmbH

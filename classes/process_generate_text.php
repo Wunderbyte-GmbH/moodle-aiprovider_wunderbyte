@@ -29,11 +29,6 @@ use Psr\Http\Message\ResponseInterface;
  */
 class process_generate_text extends abstract_processor {
     #[\Override]
-    protected function get_system_instruction(): string {
-        return $this->provider->actionconfig[$this->action::class]['settings']['systeminstruction'];
-    }
-
-    #[\Override]
     protected function create_request_object(string $userid): RequestInterface {
         // Create the user object.
         $userobj = new \stdClass();
