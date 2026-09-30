@@ -129,5 +129,15 @@ final class planner_construct_test extends \advanced_testcase {
         $this->assertObjectNotHasProperty('reasoning_effort', $construct);
         $this->assertSame('small-model', $decide->model);
         $this->assertSame('low', $decide->reasoning_effort);
+        // Only the model may differ: the system message is the selector's, byte for byte (L56, a different
+        // instruction measurably changed the constructor's answers).
+        $this->assertSame('system', $construct->messages[0]->role);
+        $this->assertSame($decide->messages[0]->content, $construct->messages[0]->content);
+        $this->assertSame(planner_decide::get_system_instruction(), planner_construct::get_system_instruction());
+        // The settings form shows the same default instruction for both planner actions.
+        $this->assertSame(
+            get_string('action_planner_decide_instruction', 'aiprovider_wunderbyte'),
+            get_string('action_planner_construct_instruction', 'aiprovider_wunderbyte')
+        );
     }
 }

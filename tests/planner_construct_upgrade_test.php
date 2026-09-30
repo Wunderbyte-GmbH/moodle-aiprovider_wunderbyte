@@ -101,7 +101,7 @@ final class planner_construct_upgrade_test extends \advanced_testcase {
         $this->assertSame('wunderbyte-privat', $seeded['settings']['model']);
         $this->assertSame('https://llm.wunderbyte.at/v1/chat/completions', $seeded['settings']['endpoint']);
         $this->assertSame('{"max_tokens": 8192}', $seeded['settings']['modelextraparams']);
-        $this->assertSame(planner_construct::get_system_instruction(), $seeded['settings']['systeminstruction']);
+        $this->assertSame(planner_decide::get_system_instruction(), $seeded['settings']['systeminstruction']);
 
         $this->assertFalse($read((int)$disabled->id)['enabled'], 'a disabled selector action stays disabled');
         $this->assertSame('big', $read((int)$disabled->id)['settings']['model']);
