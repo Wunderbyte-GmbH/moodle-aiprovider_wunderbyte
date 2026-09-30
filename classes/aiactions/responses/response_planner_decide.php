@@ -53,7 +53,16 @@ class response_planner_decide extends \core_ai\aiactions\responses\response_base
      * @param string $errormessage Optional error message.
      */
     public function __construct(bool $success, int $errorcode = 0, string $error = '', string $errormessage = '') {
-        $this->construct_response_base($success, 'planner_decide', $errorcode, $error, $errormessage);
+        $this->construct_response_base($success, static::get_actionname_for_response(), $errorcode, $error, $errormessage);
+    }
+
+    /**
+     * Name of the action this response belongs to.
+     *
+     * @return string
+     */
+    protected static function get_actionname_for_response(): string {
+        return 'planner_decide';
     }
 
     #[\Override]

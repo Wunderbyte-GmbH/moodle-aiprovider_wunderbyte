@@ -43,7 +43,7 @@ class action_chat_form extends action_settings_form {
         $mform->addElement('text', 'model', get_string('model', 'aiprovider_wunderbyte'), ['size' => 40]);
         $mform->setType('model', PARAM_TEXT);
         $mform->addRule('model', null, 'required', null, 'client');
-        $mform->setDefault('model', $actionconfig['model'] ?? 'wunderbyte-privat');
+        $mform->setDefault('model', $actionconfig['model'] ?? self::default_model($actionname));
 
         $mform->addElement(
             'textarea',
@@ -83,6 +83,17 @@ class action_chat_form extends action_settings_form {
         }
 
         $this->set_data($this->_customdata['actionconfig'] ?? []);
+    }
+
+    /**
+     * Default model alias for an action: the selector runs on the small model, every other chat action on the
+     * large one (the constructor builds schema-bound parameters, the reply is user-facing prose).
+     *
+     * @param string $actionname Short action name.
+     * @return string
+     */
+    public static function default_model(string $actionname): string {
+        return $actionname === 'planner_decide' ? 'wunderbyte-privat-mini' : 'wunderbyte-privat';
     }
 
     #[\Override]

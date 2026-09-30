@@ -34,6 +34,9 @@ use Psr\Http\Message\UriInterface;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider extends \core_ai\provider {
+    /** @var string[] Short names of the actions configured with the chat settings form. */
+    private const CHAT_ACTIONS = ['planner_decide', 'planner_construct', 'generate_agent_reply', 'generate_text'];
+
     /**
      * Get the list of actions supported by this provider.
      *
@@ -44,6 +47,7 @@ class provider extends \core_ai\provider {
             \core_ai\aiactions\generate_text::class,
             \aiprovider_wunderbyte\aiactions\generate_embeddings::class,
             \aiprovider_wunderbyte\aiactions\planner_decide::class,
+            \aiprovider_wunderbyte\aiactions\planner_construct::class,
             \aiprovider_wunderbyte\aiactions\generate_agent_reply::class,
         ];
     }
@@ -64,8 +68,7 @@ class provider extends \core_ai\provider {
             return new form\action_embeddings_form(customdata: $customdata);
         }
 
-        if ($actionname === 'planner_decide' || $actionname === 'generate_agent_reply'
-                || $actionname === 'generate_text') {
+        if (in_array($actionname, self::CHAT_ACTIONS, true)) {
             return new form\action_chat_form(customdata: $customdata);
         }
 
@@ -86,8 +89,7 @@ class provider extends \core_ai\provider {
             return $mform->get_defaults();
         }
 
-        if ($actionname === 'planner_decide' || $actionname === 'generate_agent_reply'
-                || $actionname === 'generate_text') {
+        if (in_array($actionname, self::CHAT_ACTIONS, true)) {
             $mform = new form\action_chat_form(customdata: $customdata);
             return $mform->get_defaults();
         }
