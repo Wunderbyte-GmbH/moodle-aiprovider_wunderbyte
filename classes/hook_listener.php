@@ -46,18 +46,30 @@ class hook_listener {
 
         // Show the live AI credit/usage bar for managers and admins. The bar
         // reads the instance id from the form at runtime (see initFromForm).
-        if (has_capability('aiprovider/wunderbyte:viewusage', \context_system::instance())) {
+        if (!has_capability('aiprovider/wunderbyte:viewusage', \context_system::instance())) {
+            return;
+        }
+        // The usage belongs to the key of THIS instance. A new instance (ai/configure.php without id) has no
+        // saved key yet, so nothing is requested: an id-less request would resolve to another instance's key.
+        if (optional_param('id', 0, PARAM_INT) < 1) {
             $mform->addElement(
                 'static',
                 'usagebar',
                 get_string('usage_heading', 'aiprovider_wunderbyte'),
-                \html_writer::div('', '', ['data-region' => 'wb-usage-bar']),
+                get_string('usage_unconfigured', 'aiprovider_wunderbyte'),
             );
-            $PAGE->requires->js_call_amd(
-                'aiprovider_wunderbyte/usage_bar',
-                'initFromForm',
-                ['[data-region="wb-usage-bar"]'],
-            );
+            return;
         }
+        $mform->addElement(
+            'static',
+            'usagebar',
+            get_string('usage_heading', 'aiprovider_wunderbyte'),
+            \html_writer::div('', '', ['data-region' => 'wb-usage-bar']),
+        );
+        $PAGE->requires->js_call_amd(
+            'aiprovider_wunderbyte/usage_bar',
+            'initFromForm',
+            ['[data-region="wb-usage-bar"]'],
+        );
     }
 }

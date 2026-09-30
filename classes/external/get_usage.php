@@ -41,6 +41,13 @@ use core_external\external_value;
  * identical everywhere.
  */
 class get_usage extends external_api {
+    /** @var string[] Actions whose serving instance is the site's AI credit, in priority order. */
+    private const SERVING_ACTIONS = [
+        \aiprovider_wunderbyte\aiactions\planner_decide::class,
+        \aiprovider_wunderbyte\aiactions\generate_agent_reply::class,
+        \core_ai\aiactions\generate_text::class,
+    ];
+
     /**
      * Describe input parameters.
      *
@@ -50,7 +57,7 @@ class get_usage extends external_api {
         return new external_function_parameters([
             'providerid' => new external_value(
                 PARAM_INT,
-                'Provider instance id; 0 to auto-resolve the active Wunderbyte provider.',
+                'Provider instance id; 0 for the Wunderbyte instance that serves the agent.',
                 VALUE_DEFAULT,
                 0,
             ),
@@ -84,29 +91,40 @@ class get_usage extends external_api {
     /**
      * Resolve a Wunderbyte provider instance object.
      *
-     * @param int $providerid Specific instance id, or 0 for the first (enabled) one.
+     * With an id, exactly that instance. Without one (placements that show the site's credit, e.g. the agent),
+     * the instance core_ai actually uses for the agent's calls: the first enabled and configured Wunderbyte
+     * instance in the admin's provider order that has the planner action enabled, then the reply action, then
+     * generate_text. Only if none serves an action, the first enabled instance in provider order.
+     *
+     * @param int $providerid Specific instance id, or 0 for the instance that serves the agent.
      * @return provider|null
      */
     private static function resolve_provider(int $providerid): ?provider {
         $manager = \core\di::get(\core_ai\manager::class);
-        $filter = ['provider' => provider::class];
         if ($providerid > 0) {
-            $filter['id'] = $providerid;
+            $instances = $manager->get_provider_instances(['provider' => provider::class, 'id' => $providerid]);
+            $instance = reset($instances);
+            return $instance instanceof provider ? $instance : null;
         }
 
-        $instances = $manager->get_provider_instances($filter);
-        if (empty($instances)) {
-            return null;
+        foreach (self::SERVING_ACTIONS as $actionclass) {
+            if (!class_exists($actionclass)) {
+                continue;
+            }
+            $providers = $manager->get_providers_for_actions([$actionclass], true);
+            foreach ($providers[$actionclass] ?? [] as $instance) {
+                if ($instance instanceof provider) {
+                    return $instance;
+                }
+            }
         }
 
-        // Prefer an enabled instance when auto-resolving; otherwise take the match.
-        foreach ($instances as $instance) {
+        foreach ($manager->get_sorted_providers() as $instance) {
             if ($instance instanceof provider && $instance->enabled) {
                 return $instance;
             }
         }
-        $first = reset($instances);
-        return $first instanceof provider ? $first : null;
+        return null;
     }
 
     /**
