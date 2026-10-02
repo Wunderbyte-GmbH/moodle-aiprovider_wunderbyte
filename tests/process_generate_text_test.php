@@ -110,6 +110,9 @@ final class process_generate_text_test extends \advanced_testcase {
 
         $body = (object) json_decode($request->getBody()->getContents());
         $this->assertSame($CFG->wwwroot, $body->metadata->moodle_site);
+        // The request names the action it serves (#2537): the gateway applies per-deployment
+        // request parameters by this role, so the provider never carries model knowledge.
+        $this->assertSame('generate_text', $body->metadata->action);
         // The payload itself stays intact.
         $this->assertEquals('This is a test prompt', $body->messages[1]->content);
     }
@@ -133,6 +136,7 @@ final class process_generate_text_test extends \advanced_testcase {
 
         $result = (object) json_decode($request->getBody()->getContents());
         $this->assertSame($CFG->wwwroot, $result->metadata->moodle_site);
+        $this->assertSame('generate_text', $result->metadata->action);
         $this->assertSame(['abc'], $result->metadata->tags);
     }
 

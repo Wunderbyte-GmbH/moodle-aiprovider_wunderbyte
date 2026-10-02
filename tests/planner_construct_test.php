@@ -133,4 +133,31 @@ final class planner_construct_test extends \advanced_testcase {
         $this->assertSame('user', $construct->messages[0]->role);
         $this->assertSame('user', $decide->messages[0]->role);
     }
+
+    /**
+     * Every chat request names its own action in metadata.action (#2537).
+     *
+     * The gateway decides per deployment and per role whether a request parameter such as JSON mode
+     * is applied; the provider only states which role it is sending. No model parameter leaves the
+     * provider for this, and modelextraparams stay untouched.
+     */
+    public function test_request_metadata_names_the_action(): void {
+        $provider = $this->create_tiered_provider();
+        $build = static function (string $processorclass, \core_ai\aiactions\base $action) use ($provider): \stdClass {
+            $processor = new $processorclass($provider, $action);
+            $create = new \ReflectionMethod($processor, 'create_request_object');
+            $attach = new \ReflectionMethod($processor, 'attach_site_metadata');
+            $request = $attach->invoke($processor, $create->invoke($processor, 1));
+            return json_decode($request->getBody()->getContents());
+        };
+
+        $construct = $build(process_planner_construct::class, new planner_construct(1, 2, 'p'));
+        $decide = $build(process_planner_decide::class, new planner_decide(1, 2, 'p'));
+
+        $this->assertSame('planner_construct', $construct->metadata->action);
+        $this->assertSame('planner_decide', $decide->metadata->action);
+        // The role is metadata, never a model parameter: the body carries no response_format.
+        $this->assertObjectNotHasProperty('response_format', $construct);
+        $this->assertObjectNotHasProperty('response_format', $decide);
+    }
 }
