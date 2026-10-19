@@ -25,6 +25,9 @@
 $string['action_generate_agent_reply'] = 'Generate agent reply';
 $string['action_generate_agent_reply_desc'] = 'Generates the final user-facing agent reply.';
 $string['action_generate_agent_reply_help'] = 'Composes the final assistant response from the accumulated task output.';
+$string['action_generate_content'] = 'Generate content';
+$string['action_generate_content_desc'] = 'Creates course chapters, outlines and quiz questions on the content model.';
+$string['action_generate_content_help'] = 'Writes the texts the agent fills courses and question banks with; used only while the agent\'s enhanced content generation is switched on.';
 $string['action_generate_embeddings'] = 'Generate embeddings';
 $string['action_generate_embeddings_desc'] = 'Generates embedding vectors for task catalog entries and user queries.';
 $string['action_generate_embeddings_help'] = 'Creates a vector representation of the provided input text.';

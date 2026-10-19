@@ -45,5 +45,30 @@ function xmldb_aiprovider_wunderbyte_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026093001, 'aiprovider', 'wunderbyte');
     }
 
+    if ($oldversion < 2026101900) {
+        global $DB;
+        $dbman = $DB->get_manager();
+
+        // Content creation gets its own action (generate_content) on the content model, with its own result table.
+        $table = new xmldb_table('ai_action_generate_content');
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('prompt', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('responseid', XMLDB_TYPE_CHAR, '128', null, null, null, null);
+        $table->add_field('fingerprint', XMLDB_TYPE_CHAR, '128', null, null, null, null);
+        $table->add_field('generatedcontent', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('finishreason', XMLDB_TYPE_CHAR, '128', null, null, null, null);
+        $table->add_field('prompttokens', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('completiontoken', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Existing instances receive the entry; instances that already have one are left alone.
+        \aiprovider_wunderbyte\local\generate_content_seeder::seed_missing();
+
+        upgrade_plugin_savepoint(true, 2026101900, 'aiprovider', 'wunderbyte');
+    }
+
     return true;
 }

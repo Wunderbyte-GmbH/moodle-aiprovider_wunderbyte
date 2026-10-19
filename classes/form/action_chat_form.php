@@ -90,7 +90,13 @@ class action_chat_form extends action_settings_form {
      * @return string
      */
     public static function default_model(string $actionname): string {
-        return $actionname === 'planner_decide' ? 'wunderbyte-privat-mini' : 'wunderbyte-privat';
+        if ($actionname === 'planner_decide') {
+            return 'wunderbyte-privat-mini';
+        }
+        if ($actionname === 'generate_content') {
+            return 'wunderbyte-privat-content';
+        }
+        return 'wunderbyte-privat';
     }
 
     #[\Override]

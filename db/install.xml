@@ -30,6 +30,21 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
+    <TABLE NAME="ai_action_generate_content" COMMENT="Stores content creation requests (course chapters, outlines, quiz questions).">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="prompt" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The content prompt."/>
+        <FIELD NAME="responseid" TYPE="char" LENGTH="128" NOTNULL="false" SEQUENCE="false" COMMENT="A unique identifier for the chat completion."/>
+        <FIELD NAME="fingerprint" TYPE="char" LENGTH="128" NOTNULL="false" SEQUENCE="false" COMMENT="Model fingerprint."/>
+        <FIELD NAME="generatedcontent" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The generated content."/>
+        <FIELD NAME="finishreason" TYPE="char" LENGTH="128" NOTNULL="false" SEQUENCE="false" COMMENT="Why generation stopped."/>
+        <FIELD NAME="prompttokens" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Prompt token count."/>
+        <FIELD NAME="completiontoken" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Completion token count."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
     <TABLE NAME="ai_action_generate_agent_reply" COMMENT="Stores final agent replies.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>

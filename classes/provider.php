@@ -35,7 +35,13 @@ use Psr\Http\Message\UriInterface;
  */
 class provider extends \core_ai\provider {
     /** @var string[] Short names of the actions configured with the chat settings form. */
-    private const CHAT_ACTIONS = ['planner_decide', 'planner_construct', 'generate_agent_reply', 'generate_text'];
+    private const CHAT_ACTIONS = [
+        'planner_decide',
+        'planner_construct',
+        'generate_agent_reply',
+        'generate_content',
+        'generate_text',
+    ];
 
     /**
      * Get the list of actions supported by this provider.
@@ -49,6 +55,7 @@ class provider extends \core_ai\provider {
             \aiprovider_wunderbyte\aiactions\planner_decide::class,
             \aiprovider_wunderbyte\aiactions\planner_construct::class,
             \aiprovider_wunderbyte\aiactions\generate_agent_reply::class,
+            \aiprovider_wunderbyte\aiactions\generate_content::class,
         ];
     }
 
