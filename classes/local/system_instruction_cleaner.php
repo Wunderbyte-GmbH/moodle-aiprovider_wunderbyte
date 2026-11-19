@@ -34,6 +34,7 @@ class system_instruction_cleaner {
         \aiprovider_wunderbyte\aiactions\planner_construct::class,
         \aiprovider_wunderbyte\aiactions\generate_agent_reply::class,
         \aiprovider_wunderbyte\aiactions\generate_content::class,
+        \aiprovider_wunderbyte\aiactions\inspect_image::class,
         \core_ai\aiactions\generate_text::class,
     ];
 

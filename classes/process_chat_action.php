@@ -32,7 +32,7 @@ abstract class process_chat_action extends abstract_processor {
     protected function create_request_object(string $userid): RequestInterface {
         $userobj = new \stdClass();
         $userobj->role = 'user';
-        $userobj->content = $this->action->get_configuration('prompttext');
+        $userobj->content = $this->build_user_content();
 
         $requestobj = new \stdClass();
         $requestobj->model = $this->get_model();
@@ -58,6 +58,15 @@ abstract class process_chat_action extends abstract_processor {
             headers: ['Content-Type' => 'application/json'],
             body: json_encode($requestobj),
         );
+    }
+
+    /**
+     * The content of the user message: the prompt as a plain string.
+     *
+     * @return string|array
+     */
+    protected function build_user_content(): string|array {
+        return (string)$this->action->get_configuration('prompttext');
     }
 
     #[\Override]

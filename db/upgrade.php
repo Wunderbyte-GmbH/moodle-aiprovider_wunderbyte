@@ -70,5 +70,27 @@ function xmldb_aiprovider_wunderbyte_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026101900, 'aiprovider', 'wunderbyte');
     }
 
+    if ($oldversion < 2026111800) {
+        global $DB;
+        $dbman = $DB->get_manager();
+        // Questions about images get their own action (inspect_image) with its own result table.
+        $table = new xmldb_table('ai_action_inspect_image');
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('prompt', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('responseid', XMLDB_TYPE_CHAR, '128', null, null, null, null);
+        $table->add_field('fingerprint', XMLDB_TYPE_CHAR, '128', null, null, null, null);
+        $table->add_field('generatedcontent', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('finishreason', XMLDB_TYPE_CHAR, '128', null, null, null, null);
+        $table->add_field('prompttokens', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('completiontoken', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+        // Existing instances receive the entry; instances that already have one are left alone.
+        \aiprovider_wunderbyte\local\inspect_image_seeder::seed_missing();
+        upgrade_plugin_savepoint(true, 2026111800, 'aiprovider', 'wunderbyte');
+    }
+
     return true;
 }

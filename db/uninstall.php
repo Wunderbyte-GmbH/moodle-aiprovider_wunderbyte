@@ -43,7 +43,8 @@ function xmldb_aiprovider_wunderbyte_uninstall() {
 
     // Our custom AI actions, by the short name stored in ai_action_register.
     if ($dbman->table_exists('ai_action_register')) {
-        $actionnames = ['generate_embeddings', 'planner_decide', 'planner_construct', 'generate_agent_reply', 'generate_content'];
+        $actionnames = ['generate_embeddings', 'planner_decide', 'planner_construct', 'generate_agent_reply', 'generate_content',
+            'inspect_image'];
         foreach ($actionnames as $name) {
             $DB->delete_records('ai_action_register', ['actionname' => $name]);
         }

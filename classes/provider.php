@@ -40,6 +40,7 @@ class provider extends \core_ai\provider {
         'planner_construct',
         'generate_agent_reply',
         'generate_content',
+        'inspect_image',
         'generate_text',
     ];
 
@@ -56,6 +57,7 @@ class provider extends \core_ai\provider {
             \aiprovider_wunderbyte\aiactions\planner_construct::class,
             \aiprovider_wunderbyte\aiactions\generate_agent_reply::class,
             \aiprovider_wunderbyte\aiactions\generate_content::class,
+            \aiprovider_wunderbyte\aiactions\inspect_image::class,
         ];
     }
 
