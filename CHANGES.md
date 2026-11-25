@@ -1,3 +1,12 @@
+## Version 2026112500 (1.0.4)
+* Improvement: The tables of the plugin carry the component name: `aiprovider_wunderbyte_<action>` instead of `ai_action_<action>`. The upgrade renames the existing tables; their rows and ids stay, so the log of the AI subsystem keeps pointing to them. After this upgrade an older version of the plugin no longer finds its tables.
+* Bugfix: The privacy provider declares the requests and answers the plugin stores for its actions and what a request sends to the AI service, and it exports and deletes the stored requests and answers of a user. Until now it declared the transfer only.
+* Improvement: The detail line of the AI credit bar ("usage cannot be read") comes from the language pack.
+* Feature: The provider serves Moodle's actions "Summarise text", "Explain text" and "Generate image", so a site can use Moodle's own AI placements with a model of its choice. The two text actions run on the chat model with the instruction Moodle defines for them. Image generation needs a model that creates images behind an OpenAI-compatible images endpoint; it has no default model and is switched off on a new instance until one is entered. On existing instances the upgrade adds the three actions switched off.
+* Bugfix: The upgrade adds the actions "Generate content" and "Inspect image" to provider instances that have no entry for them. That was the case on sites where the trial or key setup of the Booking Wizard wrote the instance after the two actions were introduced, so the content model and the reading of images could not be switched on there. An entry that exists is not changed, and an instance that uses a model of its own on another endpoint gets that model.
+* Improvement: German language pack. The plugin ships English and German, and a test keeps the two packs in step.
+* Improvement: `version.php` names the supported Moodle versions (5.0 to 5.3).
+
 ## Version 2026111800 (1.0.3)
 * Feature: New action "Inspect image" (`inspect_image`) that sends a text prompt together with one or more images to a model that reads images, with its own model setting per provider instance and its own result table; the stored record keeps prompt and answer, not the image.
 
