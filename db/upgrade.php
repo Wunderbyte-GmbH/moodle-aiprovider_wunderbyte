@@ -98,6 +98,10 @@ function xmldb_aiprovider_wunderbyte_upgrade($oldversion) {
         // steps above keep the old names on purpose; a site that comes from an older version passes them first.
         \aiprovider_wunderbyte\local\action_table_renamer::rename_legacy_tables();
 
+        // The provider now offers Moodle's actions summarise_text, explain_text and generate_image. Existing instances
+        // receive their entries switched off, with settings to start from; an administrator switches them on.
+        \aiprovider_wunderbyte\local\core_actions_seeder::seed_missing();
+
         upgrade_plugin_savepoint(true, 2026112500, 'aiprovider', 'wunderbyte');
     }
 
