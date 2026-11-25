@@ -28,8 +28,10 @@ use core_privacy\local\request\writer;
 /**
  * Privacy provider of the Wunderbyte AI provider.
  *
- * The plugin sends requests to the configured AI service and keeps one row per call in the table of the action:
- * the request (prompt or text to embed) and the answer. The row carries no user id of its own. Moodle's AI subsystem
+ * The plugin sends requests to the configured AI service and keeps one row per call of its own actions in the table
+ * of the action: the request (prompt or text to embed) and the answer. The calls of Moodle's actions it serves
+ * (generate_text, summarise_text, explain_text, generate_image) are stored by the AI subsystem in its own tables.
+ * A row of this plugin carries no user id of its own. Moodle's AI subsystem
  * links it to the user and the context in ai_action_register (actionname, actionid), and its privacy provider covers
  * that register and the subsystem's own action tables only. The rows of this provider's actions are therefore
  * declared, found, exported and deleted here, through the register.
@@ -55,6 +57,7 @@ class provider implements
         $collection->add_external_location_link('aiprovider_wunderbyte', [
             'prompttext' => 'privacy:metadata:aiprovider_wunderbyte:prompttext',
             'images' => 'privacy:metadata:aiprovider_wunderbyte:images',
+            'imageoptions' => 'privacy:metadata:aiprovider_wunderbyte:imageoptions',
             'userid' => 'privacy:metadata:aiprovider_wunderbyte:userid',
             'model' => 'privacy:metadata:aiprovider_wunderbyte:model',
             'action' => 'privacy:metadata:aiprovider_wunderbyte:action',

@@ -42,6 +42,8 @@ class provider extends \core_ai\provider {
         'generate_content',
         'inspect_image',
         'generate_text',
+        'summarise_text',
+        'explain_text',
     ];
 
     /**
@@ -52,6 +54,9 @@ class provider extends \core_ai\provider {
     public static function get_action_list(): array {
         return [
             \core_ai\aiactions\generate_text::class,
+            \core_ai\aiactions\summarise_text::class,
+            \core_ai\aiactions\explain_text::class,
+            \core_ai\aiactions\generate_image::class,
             \aiprovider_wunderbyte\aiactions\generate_embeddings::class,
             \aiprovider_wunderbyte\aiactions\planner_decide::class,
             \aiprovider_wunderbyte\aiactions\planner_construct::class,
@@ -76,6 +81,9 @@ class provider extends \core_ai\provider {
         if ($actionname === 'generate_embeddings') {
             return new form\action_embeddings_form(customdata: $customdata);
         }
+        if ($actionname === 'generate_image') {
+            return new form\action_image_form(customdata: $customdata);
+        }
 
         if (in_array($actionname, self::CHAT_ACTIONS, true)) {
             return new form\action_chat_form(customdata: $customdata);
@@ -97,6 +105,10 @@ class provider extends \core_ai\provider {
             $mform = new form\action_embeddings_form(customdata: $customdata);
             return $mform->get_defaults();
         }
+        if ($actionname === 'generate_image') {
+            $mform = new form\action_image_form(customdata: $customdata);
+            return $mform->get_defaults();
+        }
 
         if (in_array($actionname, self::CHAT_ACTIONS, true)) {
             $mform = new form\action_chat_form(customdata: $customdata);
@@ -104,6 +116,21 @@ class provider extends \core_ai\provider {
         }
 
         return [];
+    }
+
+    /**
+     * The actions of a new instance: every action is switched on, except image generation.
+     *
+     * The default service of this provider has no model that creates images, and the action has no default model.
+     * An administrator who has such a model enters it and switches the action on.
+     *
+     * @return array
+     */
+    #[\Override]
+    public static function initialise_action_settings(): array {
+        $actionconfig = parent::initialise_action_settings();
+        $actionconfig[\core_ai\aiactions\generate_image::class]['enabled'] = false;
+        return $actionconfig;
     }
 
     /**

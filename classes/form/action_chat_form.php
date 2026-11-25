@@ -16,6 +16,8 @@
 
 namespace aiprovider_wunderbyte\form;
 
+use core_ai\aiactions\explain_text;
+use core_ai\aiactions\summarise_text;
 use core_ai\form\action_settings_form;
 
 /**
@@ -53,7 +55,11 @@ class action_chat_form extends action_settings_form {
         );
         $mform->setType('systeminstruction', PARAM_TEXT);
         // Empty by default: the provider sends no instruction of its own, every caller brings its complete prompt.
-        $mform->setDefault('systeminstruction', $actionconfig['systeminstruction'] ?? '');
+        // The two actions of Moodle's own placements are the exception, see default_system_instruction().
+        $mform->setDefault(
+            'systeminstruction',
+            $actionconfig['systeminstruction'] ?? self::default_system_instruction((string)$this->_customdata['action']),
+        );
 
         // Free-form extra request parameters as JSON, merged verbatim into the request body. Use this to
         // enforce a hard output cap, e.g. {"max_tokens": 500} (or {"max_completion_tokens": 500} for newer models).
@@ -97,6 +103,25 @@ class action_chat_form extends action_settings_form {
             return 'wunderbyte-privat-content';
         }
         return 'wunderbyte-privat';
+    }
+
+    /**
+     * Default system instruction of an action: none, except for summarise_text and explain_text.
+     *
+     * The callers of the provider's own actions and of generate_text bring their complete prompt (George 2026-09-30,
+     * Wunderbyte-GmbH/Wunderbyte-GmbH#2505). The placements of Moodle that summarise or explain send the text alone;
+     * what to do with it is the instruction Moodle's AI subsystem defines for the action, so that instruction is
+     * the default here, as in Moodle's own providers.
+     *
+     * @param string $actionclass Action class name.
+     * @return string
+     */
+    public static function default_system_instruction(string $actionclass): string {
+        $actionclass = ltrim($actionclass, '\\');
+        if (in_array($actionclass, [summarise_text::class, explain_text::class], true)) {
+            return $actionclass::get_system_instruction();
+        }
+        return '';
     }
 
     #[\Override]

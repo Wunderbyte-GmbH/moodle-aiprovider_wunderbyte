@@ -4,10 +4,10 @@ A provider for Moodle's AI subsystem (`core_ai`) that connects Moodle to an Open
 AI service. Its default settings point to the Wunderbyte AI service (`https://llm.wunderbyte.at`,
 a [LiteLLM](https://github.com/BerriAI/litellm) proxy).
 
-Besides Moodle's own action "Generate text" it brings the actions the Wunderbyte AI Wizard
-(`local_wizard`, and the agent inside the Booking plugin) works with: planning, embeddings,
-the final reply, content creation and questions about images. A bar on the provider form shows
-administrators how much of the AI credit of a key is used.
+It serves Moodle's own actions (generate, summarise and explain text, generate image) and brings
+the actions the Wunderbyte AI Wizard (`local_wizard`, and the agent inside the Booking plugin)
+works with: planning, embeddings, the final reply, content creation and questions about images.
+A bar on the provider form shows administrators how much of the AI credit of a key is used.
 
 > Plugin location: `ai/provider/wunderbyte/` · Component: `aiprovider_wunderbyte` ·
 > Licence: GNU GPL v3 or later · Requires Moodle 5.0 or later (`2025041400`)
@@ -25,6 +25,9 @@ administrators how much of the AI credit of a key is used.
 | Action | Request | Purpose |
 |---|---|---|
 | `generate_text` (Moodle core) | chat | Text generation for Moodle's own placements. |
+| `summarise_text` (Moodle core) | chat | Summarises the text a placement sends. |
+| `explain_text` (Moodle core) | chat | Explains the text a placement sends. |
+| `generate_image` (Moodle core) | images | Creates an image from a prompt. Needs a model that creates images, see below. |
 | `planner_decide` | chat | Selects the task that fits a request and returns a structured decision. |
 | `planner_construct` | chat | Builds the parameters of the selected task. Stored in the table of `planner_decide`. |
 | `generate_agent_reply` | chat | Writes the final answer the user reads. |
@@ -33,8 +36,21 @@ administrators how much of the AI credit of a key is used.
 | `generate_embeddings` | embeddings | Creates the vector of a text, for the task catalogue and for searches. |
 
 Every action is enabled and configured per provider instance, with its own endpoint and model.
-The provider adds no system instruction of its own: the caller brings the complete prompt. The
-field "System instruction" of an action is empty by default.
+The provider adds no system instruction of its own: the caller brings the complete prompt, and the
+field "System instruction" of an action is empty by default. The exception are `summarise_text`
+and `explain_text`: Moodle's placements send the text alone, so their field starts with the
+instruction Moodle defines for the action.
+
+**Image generation** is switched off on a new instance and has no default model. A site with a
+model that creates images behind an OpenAI-compatible images endpoint enters endpoint and model
+and switches the action on. The provider sends the model, the
+prompt, one image, a size for the chosen aspect ratio (`1024x1024`, `1536x1024`, `1024x1536`) and a
+quality (`medium`, `high`); the extra parameters of the action replace any of these, and `null`
+leaves one out. The answer may carry the image as base64 data or as a URL.
+
+**After an upgrade** from a release before 1.0.4, `summarise_text`, `explain_text` and
+`generate_image` are switched off on the existing instances. The two text actions start with the
+endpoint and model of the instance's `generate_text`.
 
 ## How a request is sent
 
@@ -48,7 +64,8 @@ core_ai action  ->  process_<action>  ->  abstract_processor  ->  endpoint of th
   translated message.
 * `process_chat_action` builds a `/chat/completions` request for the chat actions;
   `process_inspect_image` adds the images as content parts; `process_generate_embeddings` calls
-  the embeddings endpoint.
+  the embeddings endpoint; `process_generate_image` calls the images endpoint and stores the image
+  as a draft file with Moodle's watermark for AI images.
 * Every request carries a hash of the site identifier and the user id (`user`), the URL of the
   site (`metadata.moodle_site`) and the name of the action (`metadata.action`). See "Data and
   privacy" below.
@@ -61,10 +78,10 @@ core_ai action  ->  process_<action>  ->  abstract_processor  ->  endpoint of th
 | Setting | Where | Notes |
 |---|---|---|
 | API key | Provider instance | Required. Sent as `Bearer` token to the endpoints of the actions, and to the usage service of the same host for the AI credit bar. |
-| API endpoint | Per action | Default `https://llm.wunderbyte.at/v1/chat/completions`, for embeddings `https://llm.wunderbyte.at/v1/embeddings`. |
-| Model | Per action | Defaults: `wunderbyte-privat-mini` for `planner_decide`, `wunderbyte-privat-content` for `generate_content`, `wunderbyte-embeddings` for embeddings, `wunderbyte-privat` for the other chat actions. |
-| System instruction | Per chat action | Empty by default. |
-| Extra parameters | Per chat action | Optional JSON that is merged into the request body, for example `{"max_tokens": 500}`. |
+| API endpoint | Per action | Default `https://llm.wunderbyte.at/v1/chat/completions`, for embeddings `https://llm.wunderbyte.at/v1/embeddings`, for images `https://llm.wunderbyte.at/v1/images/generations`. |
+| Model | Per action | Defaults: `wunderbyte-privat-mini` for `planner_decide`, `wunderbyte-privat-content` for `generate_content`, `wunderbyte-embeddings` for embeddings, `wunderbyte-privat` for the other chat actions, none for `generate_image`. |
+| System instruction | Per chat action | Empty by default; for `summarise_text` and `explain_text` the instruction Moodle defines. |
+| Extra parameters | Per chat action and image generation | Optional JSON that is merged into the request body, for example `{"max_tokens": 500}`. |
 | Embedding dimensions | Embeddings action | Default 3584, the size the default model returns. |
 
 The provider counts as configured as soon as an API key is entered.
@@ -84,7 +101,7 @@ The provider counts as configured as soon as an API key is entered.
 ## Data and privacy
 
 **Sent to the AI service** with every request: the prompt (or the text to embed), for
-`inspect_image` the images, the model name, a hash of the site identifier and the user id, the URL
+`inspect_image` the images, for `generate_image` the size and quality asked for, the model name, a hash of the site identifier and the user id, the URL
 of the Moodle site and the name of the action. The site URL lets the operator of the service see
 which sites use a key. Names and email addresses are not added by this plugin; whatever the prompt
 contains is sent as it is.
@@ -94,7 +111,9 @@ contains is sent as it is.
 `aiprovider_wunderbyte_generate_agent_reply`, `aiprovider_wunderbyte_generate_content`,
 `aiprovider_wunderbyte_inspect_image` (question and answer, not the images) and
 `aiprovider_wunderbyte_generate_embeddings` (text and vector). Moodle's AI subsystem records which user sent a
-request in `ai_action_register`. The API key is not stored in these tables.
+request in `ai_action_register`. The API key is not stored in these tables. The calls of Moodle's
+own actions (`generate_text`, `summarise_text`, `explain_text`, `generate_image`) are stored by the
+AI subsystem in its own tables, and a generated image as a file of the user.
 
 **Privacy API**: the plugin declares both, and it exports and deletes the stored requests and
 answers of a user (`classes/privacy/provider.php`). A deletion empties the request and the answer

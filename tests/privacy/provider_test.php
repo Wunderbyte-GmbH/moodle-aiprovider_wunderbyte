@@ -252,12 +252,10 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // What a request carries: the text, the images of inspect_image, the hashed user id, the site URL, the action.
         $this->assertNotNull($external);
         $sent = array_keys($external->get_privacy_fields());
-        foreach (['prompttext', 'images', 'userid', 'moodle_site', 'action', 'model'] as $field) {
+        // And for image generation the number, size and quality of the images.
+        foreach (['prompttext', 'images', 'imageoptions', 'userid', 'moodle_site', 'action', 'model'] as $field) {
             $this->assertContains($field, $sent, "$field is sent and not declared");
         }
-        // The provider offers no image generation, so it declares none.
-        $this->assertNotContains('numberimages', $sent);
-        $this->assertNotContains('responseformat', $sent);
     }
 
     /**
