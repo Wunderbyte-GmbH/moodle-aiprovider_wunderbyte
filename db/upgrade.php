@@ -102,6 +102,12 @@ function xmldb_aiprovider_wunderbyte_upgrade($oldversion) {
         // receive their entries switched off, with settings to start from; an administrator switches them on.
         \aiprovider_wunderbyte\local\core_actions_seeder::seed_missing();
 
+        // An instance that was created or rewritten after the steps 2026101900 and 2026111800 by a setup that did not
+        // know generate_content and inspect_image has neither entry: the trial and key setup of the Booking Wizard
+        // replaced the whole action configuration until Wunderbyte-GmbH/Wunderbyte-GmbH#2824. Such an instance gets
+        // the two entries here; an entry that exists is not changed.
+        \aiprovider_wunderbyte\local\content_and_image_seeder::seed_missing();
+
         upgrade_plugin_savepoint(true, 2026112500, 'aiprovider', 'wunderbyte');
     }
 
