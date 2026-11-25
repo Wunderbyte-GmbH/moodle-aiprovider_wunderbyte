@@ -137,7 +137,7 @@ class provider extends \core_ai\provider {
         // spend/budget can no longer be read here at all.
         $endpoint = $this->get_usage_gateway_endpoint();
         if ($endpoint === null) {
-            return usage::unavailable('unsupported', 'No action endpoint configured to derive the usage gateway URL from.');
+            return usage::unavailable('unsupported', get_string('usage_detail_noendpoint', 'aiprovider_wunderbyte'));
         }
 
         $request = new Request(
@@ -152,17 +152,20 @@ class provider extends \core_ai\provider {
             $response = $client->send($request, [RequestOptions::HTTP_ERRORS => false]);
         } catch (GuzzleException $e) {
             debugging('aiprovider_wunderbyte usage lookup failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
-            return usage::unavailable('http', 'Request to the usage gateway failed: ' . $e->getMessage());
+            return usage::unavailable(
+                'http',
+                get_string('usage_detail_requestfailed', 'aiprovider_wunderbyte', $e->getMessage()),
+            );
         }
 
         $status = $response->getStatusCode();
         if ($status !== 200) {
-            return usage::unavailable('http', 'Usage gateway returned HTTP ' . $status . '.');
+            return usage::unavailable('http', get_string('usage_detail_httpstatus', 'aiprovider_wunderbyte', $status));
         }
 
         $body = json_decode($response->getBody()->getContents(), true);
         if (!is_array($body)) {
-            return usage::unavailable('badresponse', 'Usage gateway response was not a JSON object.');
+            return usage::unavailable('badresponse', get_string('usage_detail_badresponse', 'aiprovider_wunderbyte'));
         }
 
         return usage::from_gateway($body);
