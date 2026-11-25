@@ -1,6 +1,9 @@
 ## Version 2026111800 (1.0.3)
 * Feature: New action "Inspect image" (`inspect_image`) that sends a text prompt together with one or more images to a model that reads images, with its own model setting per provider instance and its own result table; the stored record keeps prompt and answer, not the image.
 
+## Version 2026101900 (1.0.2)
+* Feature: New action "Generate content" (`generate_content`) for the texts the agent creates (course chapters, outlines, quiz questions), with its own endpoint, model and extra parameters per provider instance and its own result table; the default model alias is `wunderbyte-privat-content`. The upgrade adds it to existing instances with their settings of "Generate text". (Wunderbyte-GmbH/Wunderbyte-GmbH#2670)
+
 ## Version 2026093001 (1.0.1)
 * Improvement: The provider no longer adds a system instruction of its own to chat requests; every caller brings its complete prompt, so moving a caller to another action changes only the model. The settings field stays (empty by default); this upgrade empties the stored instruction of every chat action on every instance, custom texts included. (Wunderbyte-GmbH/Wunderbyte-GmbH#2505)
 
