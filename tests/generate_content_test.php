@@ -62,11 +62,11 @@ final class generate_content_test extends \advanced_testcase {
         $response = new response_generate_content(true);
         $response->set_response_data(['id' => 'r1', 'generatedcontent' => '<p>text</p>', 'finishreason' => 'stop']);
 
-        $before = $DB->count_records('ai_action_generate_content');
+        $before = $DB->count_records('aiprovider_wunderbyte_generate_content');
         $id = $action->store($response);
 
-        $this->assertSame($before + 1, $DB->count_records('ai_action_generate_content'));
-        $this->assertSame('chapter prompt', $DB->get_field('ai_action_generate_content', 'prompt', ['id' => $id]));
+        $this->assertSame($before + 1, $DB->count_records('aiprovider_wunderbyte_generate_content'));
+        $this->assertSame('chapter prompt', $DB->get_field('aiprovider_wunderbyte_generate_content', 'prompt', ['id' => $id]));
         $this->assertSame('generate_content', $response->get_actionname());
     }
 

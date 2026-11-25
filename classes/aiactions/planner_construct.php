@@ -44,9 +44,4 @@ class planner_construct extends planner_decide {
     public static function get_response_classname(): string {
         return \aiprovider_wunderbyte\aiactions\responses\response_planner_construct::class;
     }
-
-    #[\Override]
-    protected function get_tablename(): string {
-        return 'ai_action_planner_decide';
-    }
 }

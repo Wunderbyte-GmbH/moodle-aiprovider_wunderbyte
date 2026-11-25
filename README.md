@@ -90,9 +90,10 @@ which sites use a key. Names and email addresses are not added by this plugin; w
 contains is sent as it is.
 
 **Stored on the Moodle site**: one row per call with the request and the answer, in the tables
-`ai_action_planner_decide` (also for `planner_construct`), `ai_action_generate_agent_reply`,
-`ai_action_generate_content`, `ai_action_inspect_image` (question and answer, not the images) and
-`ai_action_generate_embeddings` (text and vector). Moodle's AI subsystem records which user sent a
+`aiprovider_wunderbyte_planner_decide` (also for `planner_construct`),
+`aiprovider_wunderbyte_generate_agent_reply`, `aiprovider_wunderbyte_generate_content`,
+`aiprovider_wunderbyte_inspect_image` (question and answer, not the images) and
+`aiprovider_wunderbyte_generate_embeddings` (text and vector). Moodle's AI subsystem records which user sent a
 request in `ai_action_register`. The API key is not stored in these tables.
 
 **Privacy API**: the plugin declares both, and it exports and deletes the stored requests and

@@ -101,12 +101,12 @@ final class planner_construct_test extends \advanced_testcase {
         $response = new response_planner_construct(true);
         $response->set_response_data(['id' => 'r1', 'generatedcontent' => '{}', 'finishreason' => 'stop']);
 
-        $before = $DB->count_records('ai_action_planner_decide');
+        $before = $DB->count_records('aiprovider_wunderbyte_planner_decide');
         $id = $action->store($response);
 
-        $this->assertSame($before + 1, $DB->count_records('ai_action_planner_decide'));
-        $this->assertSame('construct prompt', $DB->get_field('ai_action_planner_decide', 'prompt', ['id' => $id]));
-        $this->assertFalse($DB->get_manager()->table_exists('ai_action_planner_construct'));
+        $this->assertSame($before + 1, $DB->count_records('aiprovider_wunderbyte_planner_decide'));
+        $this->assertSame('construct prompt', $DB->get_field('aiprovider_wunderbyte_planner_decide', 'prompt', ['id' => $id]));
+        $this->assertFalse($DB->get_manager()->table_exists('aiprovider_wunderbyte_planner_construct'));
         $this->assertSame('planner_construct', $response->get_actionname());
     }
 

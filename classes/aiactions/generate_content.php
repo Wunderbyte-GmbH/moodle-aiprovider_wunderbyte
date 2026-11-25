@@ -30,6 +30,8 @@ use core_ai\aiactions\responses\response_base;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class generate_content extends base {
+    use provider_table;
+
     /** @var int The user who requested the content. */
     protected int $userid;
 

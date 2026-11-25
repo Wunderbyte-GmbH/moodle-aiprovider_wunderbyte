@@ -21,8 +21,12 @@ namespace aiprovider_wunderbyte\local;
  *
  * Every action of the provider stores one row per call (see the store() method of the action classes); Moodle's AI
  * subsystem links that row to the user and the context in ai_action_register (actionname, actionid). This class is the
- * one place that knows which action writes into which table and which columns hold content, so the privacy provider
- * does not repeat the table names. A test compares it with the action classes and with db/install.xml.
+ * one place that knows which action writes into which table and which columns hold content: the action classes take
+ * their table from it (trait aiactions\provider_table) and the privacy provider reads it. A test compares it with
+ * the action classes and with db/install.xml.
+ *
+ * The tables carry the component name. Until release 1.0.3 they were named ai_action_<action>, like the action
+ * tables of the AI subsystem itself; local\action_table_renamer moves existing sites to the names used here.
  *
  * @package    aiprovider_wunderbyte
  * @copyright  2026 Wunderbyte GmbH
@@ -31,13 +35,13 @@ namespace aiprovider_wunderbyte\local;
 final class action_tables {
     /** @var string[] The table of every action, by the short name of the action as ai_action_register stores it. */
     private const TABLES = [
-        'generate_agent_reply' => 'ai_action_generate_agent_reply',
-        'generate_content' => 'ai_action_generate_content',
-        'generate_embeddings' => 'ai_action_generate_embeddings',
-        'inspect_image' => 'ai_action_inspect_image',
-        'planner_decide' => 'ai_action_planner_decide',
+        'generate_agent_reply' => 'aiprovider_wunderbyte_generate_agent_reply',
+        'generate_content' => 'aiprovider_wunderbyte_generate_content',
+        'generate_embeddings' => 'aiprovider_wunderbyte_generate_embeddings',
+        'inspect_image' => 'aiprovider_wunderbyte_inspect_image',
+        'planner_decide' => 'aiprovider_wunderbyte_planner_decide',
         // The constructor phase stores its rows in the table of planner_decide.
-        'planner_construct' => 'ai_action_planner_decide',
+        'planner_construct' => 'aiprovider_wunderbyte_planner_decide',
     ];
 
     /** @var string[] The columns of a chat action table, without the id. */

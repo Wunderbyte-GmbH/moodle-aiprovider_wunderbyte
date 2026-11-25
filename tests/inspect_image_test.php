@@ -132,7 +132,7 @@ final class inspect_image_test extends \advanced_testcase {
         $response->set_response_data(['id' => 'r1', 'generatedcontent' => 'a bee', 'finishreason' => 'stop']);
         $id = $action->store($response);
 
-        $record = $DB->get_record('ai_action_inspect_image', ['id' => $id], '*', MUST_EXIST);
+        $record = $DB->get_record('aiprovider_wunderbyte_inspect_image', ['id' => $id], '*', MUST_EXIST);
         $this->assertSame('what does it show', $record->prompt);
         $this->assertSame('a bee', $record->generatedcontent);
         $this->assertStringNotContainsString('SECRETIMAGEDATA', json_encode($record));

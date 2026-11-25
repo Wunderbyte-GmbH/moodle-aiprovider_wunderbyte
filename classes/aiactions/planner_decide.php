@@ -27,6 +27,8 @@ use core_ai\aiactions\responses\response_base;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class planner_decide extends base {
+    use provider_table;
+
     /** @var int Moodle user id owning the request. */
     protected int $userid;
 
