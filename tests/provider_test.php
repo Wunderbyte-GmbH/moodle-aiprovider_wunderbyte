@@ -114,10 +114,9 @@ final class provider_test extends \advanced_testcase {
         // The 4th request for the same user should be denied.
         $result = $provider->is_request_allowed($action);
         $this->assertFalse($result['success']);
-        $this->assertEquals(
-            'You have reached the maximum number of AI requests you can make in an hour. Try again later.',
-            $result['errormessage']
-        );
+        // The wording comes from Moodle's AI subsystem and differs between Moodle 5.0 and 5.1; the code does not.
+        $this->assertSame(429, $result['errorcode']);
+        $this->assertNotEmpty($result['errormessage']);
 
         // Change user id to make a request for a different user, should pass (4 requests for global rate).
         $action = new \core_ai\aiactions\generate_image(
@@ -137,10 +136,8 @@ final class provider_test extends \advanced_testcase {
         // The 6th request should be denied.
         $result = $provider->is_request_allowed($action);
         $this->assertFalse($result['success']);
-        $this->assertEquals(
-            expected: 'The AI service has reached the maximum number of site-wide requests per hour. Try again later.',
-            actual: $result['errormessage'],
-        );
+        $this->assertSame(429, $result['errorcode']);
+        $this->assertNotEmpty($result['errormessage']);
     }
 
     /**
