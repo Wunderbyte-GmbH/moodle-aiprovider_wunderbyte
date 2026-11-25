@@ -25,8 +25,7 @@
 /**
  * Remove core_ai state that Moodle does NOT clean up when this plugin is uninstalled.
  *
- * Moodle drops this plugin's own tables (ai_action_generate_embeddings /
- * ai_action_planner_decide / ai_action_generate_agent_reply), but core_ai's shared
+ * Moodle drops this plugin's own tables (aiprovider_wunderbyte_*), but core_ai's shared
  * ai_action_register keeps the rows for our custom actions. After a reinstall the
  * recreated (empty) action tables restart their ids from 1 and collide with those
  * stale register rows on the UNIQUE (actionname, actionid) index — surfacing as

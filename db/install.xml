@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="ai/provider/wunderbyte/db" VERSION="2026051600" COMMENT="XMLDB file for aiprovider_wunderbyte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
+<XMLDB PATH="ai/provider/wunderbyte/db" VERSION="2026112500" COMMENT="XMLDB file for aiprovider_wunderbyte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
   <TABLES>
-    <TABLE NAME="ai_action_generate_embeddings" COMMENT="Stores embedding generation requests.">
+    <TABLE NAME="aiprovider_wunderbyte_generate_embeddings" COMMENT="Stores embedding generation requests.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="inputtext" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The input text used to generate the embedding."/>
@@ -15,7 +15,7 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="ai_action_planner_decide" COMMENT="Stores planner routing decisions.">
+    <TABLE NAME="aiprovider_wunderbyte_planner_decide" COMMENT="Stores planner routing decisions.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="prompt" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The planner prompt."/>
@@ -30,7 +30,7 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="ai_action_generate_content" COMMENT="Stores content creation requests (course chapters, outlines, quiz questions).">
+    <TABLE NAME="aiprovider_wunderbyte_generate_content" COMMENT="Stores content creation requests (course chapters, outlines, quiz questions).">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="prompt" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The content prompt."/>
@@ -45,7 +45,7 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="ai_action_inspect_image" COMMENT="Stores questions about images (the prompt and the answer, never the image).">
+    <TABLE NAME="aiprovider_wunderbyte_inspect_image" COMMENT="Stores questions about images (the prompt and the answer, never the image).">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="prompt" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The prompt that goes with the images."/>
@@ -60,7 +60,7 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="ai_action_generate_agent_reply" COMMENT="Stores final agent replies.">
+    <TABLE NAME="aiprovider_wunderbyte_generate_agent_reply" COMMENT="Stores final agent replies.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="prompt" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The reply prompt."/>

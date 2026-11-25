@@ -92,5 +92,14 @@ function xmldb_aiprovider_wunderbyte_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026111800, 'aiprovider', 'wunderbyte');
     }
 
+    if ($oldversion < 2026112500) {
+        // The action tables get the component prefix (aiprovider_wunderbyte_<action> instead of ai_action_<action>).
+        // The tables are renamed, not copied: rows and ids stay, so ai_action_register keeps pointing to them. The
+        // steps above keep the old names on purpose; a site that comes from an older version passes them first.
+        \aiprovider_wunderbyte\local\action_table_renamer::rename_legacy_tables();
+
+        upgrade_plugin_savepoint(true, 2026112500, 'aiprovider', 'wunderbyte');
+    }
+
     return true;
 }
